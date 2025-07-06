@@ -7,92 +7,11 @@ template.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.starting_template
 """
+from defs import *
+from cell import CellSprite, calc_cell_positions
 import arcade
 
-# window constants
-WINDOW_WIDTH = 1280
-WINDOW_HEIGHT = 720
-WINDOW_TITLE = "Lotti Karrotti"
-
-# cell constants
-CELL_POSITIONS=[(50, 50), (100, 50), (150, 50), (200, 50),
-                (200, 100),
-                (50, 150), (100, 150), (150,150), (200, 150)]
-CELL_CNT=len(CELL_POSITIONS)
-CELL_SCALE=0.1
-CELL_DANGEROUS=(2, 4, 5)
-CELL_RADIUS=40
-
-
-cell_green_texture = arcade.load_texture("cell_green.png")
-cell_red_texture = arcade.load_texture("cell_red.png")
-cell_hole_texture = arcade.load_texture("cell_hole.png")
-
-CELL_TYPE_TO_PATH={"green": "green.png", "red": "red.png", "hole": "red_with_hole.png"}
-
-class Cell(arcade.Sprite):
-  
-  def __init__(self, nr, **kwargs):
-    self.nr=nr
-    self.hare=None
-    # maybe replace with type?
-    #center_x=CELL_POSITIONS[nr][0]
-    #center_y=CELL_POSITIONS[nr][1]
-    #scale=CELL_SCALE
-    # which hare is on this cell
-    if self.nr in CELL_DANGEROUS:
-      texture=cell_red_texture
-      self.cell_type="red"
-    else:
-      texture=cell_green_texture
-      self.cell_type="green"
-    super().__init__(texture, CELL_SCALE, CELL_POSITIONS[nr][0], CELL_POSITIONS[nr][1], **kwargs)
-    
-#  def change_type(self, cell_type):
-#    self.path_or_texture=CELL_TYPE_TO_PATH[cell_type]
-
-def calc_cell_positions():
-  """
-  1 2 3 4 5 6
-            7
-          9 8
-  """
-  cell_diam=CELL_RADIUS*2+10
-  width=int(WINDOW_WIDTH*0.75)
-  max_hor_cnt=int(width/cell_diam)
-  max_ver_cnt=int(WINDOW_HEIGHT/cell_diam)
-  print(f"max_hor_cnt={max_hor_cnt} max_ver_cnt={max_ver_cnt}")
-  ver_half=int(max_ver_cnt/2)
-  max_cell_cnt=(max_hor_cnt+1)*ver_half + max_hor_cnt*(max_ver_cnt%2)
-  print(f"""\
-max_hor_cnt={max_hor_cnt} 
-max_ver_cnt={max_ver_cnt}
-max_cell_cnt={max_cell_cnt}
-""")
-  
-  
-  
-  
-
-class CellSprite(arcade.SpriteCircle):
-  def __init__(self, nr, **kwargs):
-    self.nr=nr
-    self.hare=None
-
-    #self.center_x=CELL_POSITIONS[nr][0]
-    #self.center_y=CELL_POSITIONS[nr][1]
-    #self.position=(CELL_POSITIONS[nr][0], CELL_POSITIONS[nr][1])
-    # which hare is on this cell
-    if self.nr in CELL_DANGEROUS:
-      #texture=cell_red_texture
-      self.cell_type="red"
-      color=(255,0,0)
-    else:
-      #texture=cell_green_texture
-      self.cell_type="green"
-      color=(0,255,255)
-    
-    super().__init__( CELL_RADIUS, color, False,**kwargs)
+CELL_POSITIONS=calc_cell_positions()
 
 
 class GameView(arcade.View):
@@ -106,22 +25,19 @@ class GameView(arcade.View):
 
     def __init__(self):
         super().__init__()
-
-        self.background_color = arcade.color.SCHOOL_BUS_YELLOW
-
+        self.background_color = arcade.color.AMAZON
         # If you have sprite lists, you should create them here,
         # and set them to None
         self.cell_list = arcade.SpriteList()
         
     def setup(self):
-
+        # create all cells 
         for i in range(CELL_CNT):
-          cell=CellSprite(i)
-          #cell.position= (CELL_POSITIONS[i][0], CELL_POSITIONS[i][1])
-          cell.center_x=CELL_POSITIONS[i][0]
-          cell.center_y=CELL_POSITIONS[i][1]
-          self.cell_list.append(cell)
-        print(self.__dir__())
+            cell=CellSprite(i)
+            cell.center_x=CELL_POSITIONS[i][0]
+            cell.center_y=CELL_POSITIONS[i][1]
+            self.cell_list.append(cell)
+        #print(self.__dir__())
 
     def reset(self):
         """Reset the game to the initial state."""
@@ -140,9 +56,9 @@ class GameView(arcade.View):
         # Call draw() on all your sprite lists below
 
         self.cell_list.draw()
-        arcade.draw_line(int(WINDOW_WIDTH*0.75), 
+        arcade.draw_line(CELLS_FIELD_WIDTH, 
                           0, 
-                          int(WINDOW_WIDTH*0.75), 
+                          CELLS_FIELD_WIDTH, 
                           WINDOW_HEIGHT, 
                           arcade.color.BABY_BLUE,
                           5)
@@ -164,7 +80,8 @@ class GameView(arcade.View):
         For a full list of keys, see:
         https://api.arcade.academy/en/latest/arcade.key.html
         """
-        pass
+        if key == arcade.key.ESCAPE:
+            self.window.close()
 
     def on_key_release(self, key, key_modifiers):
         """
