@@ -9,6 +9,7 @@ python -m arcade.examples.starting_template
 """
 from defs import *
 from cell import CellSprite, calc_cell_positions
+from player import Player
 import arcade
 
 CELL_POSITIONS=calc_cell_positions()
@@ -29,6 +30,7 @@ class GameView(arcade.View):
         # If you have sprite lists, you should create them here,
         # and set them to None
         self.cell_list = arcade.SpriteList()
+        self.player_list=[]
         
     def setup(self):
         # create all cells 
@@ -37,7 +39,13 @@ class GameView(arcade.View):
             cell.center_x=CELL_POSITIONS[i][0]
             cell.center_y=CELL_POSITIONS[i][1]
             self.cell_list.append(cell)
-        #print(self.__dir__())
+        # create player boundaries
+        Player.setup_boundaries()
+        for p in range(PLAYER_CNT):
+            player=Player(p, PLAYER_PROPS[p]["color"])
+            player.setup()
+            self.player_list.append(player)
+
 
     def reset(self):
         """Reset the game to the initial state."""
@@ -56,12 +64,9 @@ class GameView(arcade.View):
         # Call draw() on all your sprite lists below
 
         self.cell_list.draw()
-        arcade.draw_line(CELLS_FIELD_WIDTH, 
-                          0, 
-                          CELLS_FIELD_WIDTH, 
-                          WINDOW_HEIGHT, 
-                          arcade.color.BABY_BLUE,
-                          5)
+        Player.boundary_list.draw()
+        for p in self.player_list:
+            p.hare_sprite_list.draw()
                         
         
 
