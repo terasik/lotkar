@@ -67,6 +67,8 @@ class GameView(arcade.View):
         Player.boundary_list.draw()
         for p in self.player_list:
             p.hare_sprite_list.draw()
+            p.batch.draw()
+            #p.player_nr_text.draw()
                         
         
 
