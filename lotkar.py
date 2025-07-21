@@ -7,12 +7,13 @@ template.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.starting_template
 """
-from defs import *
-from cell import CellSprite, calc_cell_positions
-from player import Player
 import arcade
+from defs import *
+from cell import Cell
+from player import Player
+from game import Game
 
-CELL_POSITIONS=calc_cell_positions()
+CELL_POSITIONS=Cell.calc_cell_positions()
 
 
 class GameView(arcade.View):
@@ -31,16 +32,23 @@ class GameView(arcade.View):
         # and set them to None
         self.cell_list = arcade.SpriteList()
         self.player_list=[]
+        self.game=None
+
         
     def setup(self):
-        # create all cells 
+        # create game status
+        self.game=Game()
+        self.game.setup()
+        # create all cells
         for i in range(CELL_CNT):
-            cell=CellSprite(i)
+            cell=Cell(i)
             cell.center_x=CELL_POSITIONS[i][0]
             cell.center_y=CELL_POSITIONS[i][1]
             self.cell_list.append(cell)
         # create player boundaries
-        Player.setup_boundaries()
+        Player.setup_status_sprites()
+        Player.setup_boundary_shapes()
+
         for p in range(PLAYER_CNT):
             player=Player(p, PLAYER_PROPS[p]["color"])
             player.setup()
@@ -62,9 +70,12 @@ class GameView(arcade.View):
         self.clear()
 
         # Call draw() on all your sprite lists below
-
+        self.game.sprite_list.draw()
+        self.game.batch.draw()
         self.cell_list.draw()
-        Player.boundary_list.draw()
+        Player.status_sprite_list.draw()
+        Player.boundary_shape_list.draw()
+
         for p in self.player_list:
             p.hare_sprite_list.draw()
             p.batch.draw()
@@ -78,6 +89,7 @@ class GameView(arcade.View):
         Normally, you'll call update() on the sprite lists that
         need it.
         """
+        self.game.update(delta_time)
         pass
 
     def on_key_press(self, key, key_modifiers):

@@ -11,22 +11,37 @@ class Hare(arcade.Sprite):
         self.player_nr=player_nr
         self.available=True
         self.on_play=False
-        self.calc_start_position()
+        self.init_scale=0.23
+        self.init_width=64
+        self.init_height=85
+        self.calc_init_wh()
         texture=arcade.load_texture(f"resources/rabbit_{color}_{nr}.png")
-        super().__init__(texture, scale=0.25, **kwargs)
+        super().__init__(texture, scale=self.init_scale, **kwargs)
 
-    def calc_start_position(self):
-        start_x=CELLS_FIELD_WIDTH+BOUNDARY_LINE_WIDTH+HARE_SPACE
+    def calc_init_wh(self):
+        """ calculate init width and height of hare pics """
         max_width=(WINDOW_WIDTH-CELLS_FIELD_WIDTH-2*BOUNDARY_LINE_WIDTH)//PLAYER_HARE_CNT -\
                 HARE_SPACE*PLAYER_HARE_CNT - 5
-        scale=max_width/HARE_WIDTH_ORIG
-        new_width=int(scale*HARE_WIDTH_ORIG)
-        new_height=int(scale*HARE_HEIGHT_ORIG)
-        start_x=start_x+(new_width//2)+(self.nr-1)*(new_width+HARE_SPACE)
-        start_y=WINDOW_HEIGHT-((WINDOW_HEIGHT*(self.player_nr+1))//PLAYER_CNT)+\
-                BOUNDARY_LINE_WIDTH+HARE_SPACE+(new_height//2)
-        print(f"hare : max_width={max_width} scale={scale} new_width={new_width} new_height={new_height}")
-        print(f"hare: start_x={start_x} start_y={start_y}")
+        max_height=WINDOW_HEIGHT//PLAYER_CNT-80
+        scale_x=max_width/HARE_WIDTH_ORIG
+        scale_y=max_height/HARE_HEIGHT_ORIG
+        print(f"scale_x={scale_x} scale_y={scale_y}")
+        self.init_scale = scale_y if scale_x > scale_y else scale_x
+        self.init_width=int(self.init_scale*HARE_WIDTH_ORIG)
+        self.init_height=int(self.init_scale*HARE_HEIGHT_ORIG)
+        print(f"max_width={max_width} scale={self.init_scale} new_width={self.init_width} new_height={self.init_height}")
+
+
+    def calc_init_position(self):
+        x=CELLS_FIELD_WIDTH+BOUNDARY_LINE_WIDTH+\
+                (self.init_width//2)+(self.nr-1)*(self.init_width+HARE_SPACE)
+        y=WINDOW_HEIGHT-((WINDOW_HEIGHT*(self.player_nr+1))//PLAYER_CNT)+\
+                BOUNDARY_LINE_WIDTH+HARE_SPACE+(self.init_height//2)
+        print(f"hare: init_x={x} init_y={y}")
+        return (x, y)
+
+    def set_init_position(self):
+        self.position=self.calc_init_position()
 
 
 
