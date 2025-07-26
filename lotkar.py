@@ -70,8 +70,9 @@ class GameView(arcade.View):
         self.clear()
 
         # Call draw() on all your sprite lists below
-        self.game.sprite_list.draw()
-        self.game.batch.draw()
+        #self.game.sprite_list.draw()
+        #self.game.batch.draw()
+        self.game.draw()
         self.cell_list.draw()
         Player.status_sprite_list.draw()
         Player.boundary_shape_list.draw()
