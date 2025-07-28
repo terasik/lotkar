@@ -14,10 +14,10 @@ class Cell(arcade.SpriteCircle):
 
         if nr in CELL_DANGEROUS:
             self.cell_type="red"
-            color=(255,0,0)
+            color=arcade.color.RED
         elif nr==(CELL_CNT-1):
             self.cell_type="orange"
-            color=(255,255,0)
+            color=arcade.color.ORANGE
 
         super().__init__( CELL_RADIUS, color, False,**kwargs)
 

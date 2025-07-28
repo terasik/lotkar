@@ -37,7 +37,7 @@ class GameView(arcade.View):
         
     def setup(self):
         # create game status
-        self.game=Game()
+        self.game=Game(self)
         self.game.setup()
         # create all cells
         for i in range(CELL_CNT):
