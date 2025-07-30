@@ -53,6 +53,8 @@ class Player:
                                    batch=self.batch)
 
 
+    def update(self, delta_time):
+        self.hare_sprite_list.update(delta_time)
 
     @classmethod
     def setup_boundary_shapes(cls):

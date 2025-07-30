@@ -32,16 +32,16 @@ class Cell(arcade.SpriteCircle):
         cell_diam=cls.diam
         max_hor_cnt=CELLS_FIELD_WIDTH//cell_diam
         max_ver_cnt=(WINDOW_HEIGHT-GAME_STATUS_SPRITE_HEIGHT)//cell_diam
-        print(f"max_hor_cnt={max_hor_cnt} max_ver_cnt={max_ver_cnt}")
+        #print(f"max_hor_cnt={max_hor_cnt} max_ver_cnt={max_ver_cnt}")
         ver_half=max_ver_cnt//2
         max_cell_cnt=(max_hor_cnt+1)*ver_half + max_hor_cnt*(max_ver_cnt%2)
-        print(f"max_hor_cnt={max_hor_cnt} max_ver_cnt={max_ver_cnt} max_cell_cnt={max_cell_cnt}")
+        #print(f"max_hor_cnt={max_hor_cnt} max_ver_cnt={max_ver_cnt} max_cell_cnt={max_cell_cnt}")
         # direction to left
         to_left=False
         cell_positions=[]
         last_x=cell_diam*max_hor_cnt-(cell_diam//2)
         last_hx=last_x
-        print(f"last_x={last_x}")
+        #print(f"last_x={last_x}")
         # vertikal
         for cnt_ver in range(max_ver_cnt):
             y=cell_diam*(1+cnt_ver)-(cell_diam//2)+GAME_STATUS_SPRITE_HEIGHT
@@ -58,7 +58,7 @@ class Cell(arcade.SpriteCircle):
                         cell_positions.append([last_x-(cell_diam*x), y])
                 to_left=not to_left
                 last_hx=cell_positions[-1][0]
-        print(cell_positions)
+        #print(cell_positions)
         return cell_positions
             
 

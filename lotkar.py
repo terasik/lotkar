@@ -91,6 +91,8 @@ class GameView(arcade.View):
         need it.
         """
         self.game.update(delta_time)
+        for p in self.player_list:
+            p.update(delta_time)
         pass
 
     def on_key_press(self, key, key_modifiers):

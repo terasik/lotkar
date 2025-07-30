@@ -11,10 +11,14 @@ class Hare(arcade.Sprite):
         self.player_nr=player_nr
         self.available=True
         self.on_play=False
+        self.move_ready=False
         self.init_scale=0.23
         self.init_width=64
         self.init_height=85
+        self.cell_scale=HARE_HEIGHT_ORIG*0.5/CELL_RADIUS
+        #self.new_position=self.calc_init_position()
         self.calc_init_wh()
+        self.new_position=self.calc_init_position()
         texture=arcade.load_texture(f"resources/rabbit_{color}_{nr}.png")
         super().__init__(texture, scale=self.init_scale, **kwargs)
 
@@ -25,11 +29,11 @@ class Hare(arcade.Sprite):
         max_height=WINDOW_HEIGHT//PLAYER_CNT-80
         scale_x=max_width/HARE_WIDTH_ORIG
         scale_y=max_height/HARE_HEIGHT_ORIG
-        print(f"scale_x={scale_x} scale_y={scale_y}")
+        #print(f"scale_x={scale_x} scale_y={scale_y}")
         self.init_scale = scale_y if scale_x > scale_y else scale_x
         self.init_width=int(self.init_scale*HARE_WIDTH_ORIG)
         self.init_height=int(self.init_scale*HARE_HEIGHT_ORIG)
-        print(f"max_width={max_width} scale={self.init_scale} new_width={self.init_width} new_height={self.init_height}")
+        #print(f"max_width={max_width} scale={self.init_scale} new_width={self.init_width} new_height={self.init_height}")
 
 
     def calc_init_position(self):
@@ -37,11 +41,40 @@ class Hare(arcade.Sprite):
                 (self.init_width//2)+(self.nr-1)*(self.init_width+HARE_SPACE)
         y=WINDOW_HEIGHT-((WINDOW_HEIGHT*(self.player_nr+1))//PLAYER_CNT)+\
                 BOUNDARY_LINE_WIDTH+HARE_SPACE+(self.init_height//2)
-        print(f"hare: init_x={x} init_y={y}")
+        print(f"hare nr={self.nr} pl={self.player_nr} init_x={x} init_y={y}")
         return (x, y)
 
     def set_init_position(self):
         self.position=self.calc_init_position()
+        print(f"hare nr={self.nr} pl={self.player_nr} position={self.position}")
+
+    def rescale_to_cell(self):
+        self.scale=self.cell_scale
+
+    def move_to_cell(self):
+        end_x=self.new_position[0]
+        end_y=self.new_position[1]
+        if self.center_x!=end_x and self.center_y!=end_y:
+            self.move_ready=False
+        if self.center_x>end_x:
+            self.center_x-=1
+        elif self.center_x<end_x:
+            self.center_x+=1
+        else:
+            if self.center_y>end_y:
+                self.center_y-=1
+            elif self.center_y<end_y:
+                self.center_y+=1
+            else:
+                self.move_ready=True
+
+    def update(self, delta_time):
+        self.move_to_cell()
+
+
+
+
+
 
 
 

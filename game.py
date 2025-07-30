@@ -153,8 +153,8 @@ class Game:
             time_end=self.timer_end(delta_time, CARD_TIME_END)
             if self.timer_change(delta_time, CARD_TIME_CHANGE):
                 cell_nr=random.choice(CELL_DANGEROUS+(0,))
-                print(f"--- cell_nr: {cell_nr}")
-                print(f"--- hole_nr: {self.hole_nr}")
+                #print(f"--- cell_nr: {cell_nr}")
+                #print(f"--- hole_nr: {self.hole_nr}")
                 self.reset_timer=0
                 if self.hole_nr:
                     self.game_view.cell_list[self.hole_nr].color=arcade.color.RED
@@ -170,6 +170,18 @@ class Game:
             if self.player_input in ["1", "2", "3", "4"]:
                 self.reset_timer=0
                 self.allow_input=False
+
+            new_postion=((self.player_active+1)*200, 200)
+            self.game_view.player_list[self.player_active].hare_sprite_list[0].new_position=new_postion
+
+        elif self.state==GS_MOVE_HARE:
+
+            if self.game_view.player_list[self.player_active].hare_sprite_list[0].move_ready:
+                self.state=GS_CHECK_HARE
+            else:
+                self.reset_timer=0
+
+
 
         elif self.state==GS_CHECK_HARE:
             if self.timer_change(delta_time, 3):
