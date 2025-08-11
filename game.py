@@ -5,14 +5,9 @@ import random
 import arcade
 from pyglet.graphics import Batch
 from defs import *
+from player import Player
+from cell import Cell
 
-"""
-class GameStMa(Enum):
-    RANDOM_CARD=0
-    MOVE_HARE=1
-    CHECK_HARE=2
-    CHECK_PLAYER=3
-"""
 # game states
 GS_RANDOM_CARD=0
 GS_WAIT_FOR_INPUT=1
@@ -20,14 +15,10 @@ GS_MOVE_HARE=2
 GS_CHECK_HARE=3
 GS_CHECK_PLAYER=4
 GS_RANDOM_HOLE=5
+GS_SELECT_CELL=6
 
-GS2TEXT=["Karte ziehen", "Warte auf Eingabe", "Bewege Hase", "Prüfe Hase", "Prüfe Spieler", "Schwarzes Loch"]
+GS2TEXT=["Karte ziehen", "Warte auf Eingabe", "Bewege Hase", "Prüfe Hase", "Prüfe Spieler", "Schwarzes Loch", "Warte auf ZellNr. Eingabe"]
 
-"""
-class GameCard(arcade.Sprite):
-    def __init__(self):
-        pass
-"""
 
 class GameCard(arcade.Sprite):
 
@@ -77,6 +68,7 @@ class Game:
         self.allow_input=False
         self.player_input=None
         self.hole_nr=0
+        self.hare_nr=0
 
     def setup(self):
         # status section
@@ -130,6 +122,19 @@ class Game:
             return True
         return False
 
+    def highlight_active_player(self):
+        for p in range(PLAYER_CNT):
+            if p==self.player_active:
+                Player.status_sprite_list[PLAYER_CNT-p-1].color=arcade.color.GREEN
+            else:
+                Player.status_sprite_list[PLAYER_CNT-p-1].color=arcade.color.WHITE
+
+
+    def get_available_hares(self, player):
+        ahl=[c for c,h in enumerate(player.hare_sprite_list) if h.available]
+        print(f"av. hares: {ahl}")
+        return ahl    
+
 
     def update(self, delta_time):
         self.play_time+=delta_time
@@ -138,6 +143,9 @@ class Game:
         self.text_player_active.text=f"Spieler: {self.player_active+1}"
         self.text_state.x=self.text_player_active.content_width+50
         self.text_state.text=f"Status: {GS2TEXT[self.state]}"
+        player=self.game_view.player_list[self.player_active]
+        self.highlight_active_player()
+
         if self.state==GS_RANDOM_CARD:
             self.game_card.update(delta_time)
             if self.game_card.ready:
@@ -165,18 +173,46 @@ class Game:
                     self.time_end_cnt=0
                     self.state=GS_CHECK_HARE
 
-        elif self.state==GS_WAIT_FOR_INPUT:
-            self.allow_input=True
-            if self.player_input in ["1", "2", "3", "4"]:
-                self.reset_timer=0
-                self.allow_input=False
 
-            new_postion=((self.player_active+1)*200, 200)
-            self.game_view.player_list[self.player_active].hare_sprite_list[0].new_position=new_postion
+        elif self.state==GS_WAIT_FOR_INPUT:
+            #self.allow_input=True
+            #if self.player_input in self.get_available_hares(player):
+            #    self.reset_timer=0
+            #    self.allow_input=False
+            #    self.player_input=None
+            #    self.state=GS_SELECT_CELL
+            try:
+                hare_nr=int(input("provide hare nr: "))
+                print(f"hare_nr : {hare_nr}")
+                if hare_nr-1 in self.get_available_hares(player):
+                    self.hare_nr=hare_nr-1
+                    self.state=GS_SELECT_CELL
+                else:
+                    print("false input. try again")
+            except:
+                print("except: false input. try again")
+            self.reset_timer=0
+
+
+        elif self.state==GS_SELECT_CELL:
+            try:
+                dest_cell=int(input("provide cell nr: "))
+                if dest_cell-1 in list(range(CELL_CNT)):
+                    new_position=Cell.calc_cell_positions()[dest_cell-1]
+                    print(f"new position: {new_position}")
+                    player.hare_sprite_list[self.hare_nr].new_position=new_position
+                    player.hare_sprite_list[self.hare_nr].rescale_to_cell()
+                    self.state=GS_MOVE_HARE
+                else:
+                    print("false input. try again")
+            except:
+                print("except: false input. try again")
+            self.reset_timer=0
+
 
         elif self.state==GS_MOVE_HARE:
 
-            if self.game_view.player_list[self.player_active].hare_sprite_list[0].move_ready:
+            if player.hare_sprite_list[self.hare_nr].move_ready:
                 self.state=GS_CHECK_HARE
             else:
                 self.reset_timer=0
