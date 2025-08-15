@@ -101,6 +101,14 @@ class Game:
                                         color=arcade.color.BLACK,
                                         batch=self.batch)
 
+        # free text 
+        self.text_free=arcade.Text("",
+                                        100,
+                                        GAME_STATUS_SPRITE_HEIGHT-2*TEXT_SIZE,
+                                        font_size=TEXT_FONT_SIZE,
+                                        color=arcade.color.BLACK,
+                                        batch=self.batch)
+
         # cards
         self.game_card=GameCard()
         self.game_card.setup()
@@ -139,10 +147,12 @@ class Game:
     def update(self, delta_time):
         self.play_time+=delta_time
         self.reset_timer+=delta_time
-        self.text_play_time.text=f"Zeit: {self.play_time:.1f}s"
+        self.text_play_time.text=f"Zeit: {int(self.play_time)//60:>4}m {int(self.play_time)%60:>2}s"
         self.text_player_active.text=f"Spieler: {self.player_active+1}"
         self.text_state.x=self.text_player_active.content_width+50
         self.text_state.text=f"Status: {GS2TEXT[self.state]}"
+        self.text_free.x=self.text_play_time.content_width+50
+        self.text_free.text=f"Input: {self.player_input}"
         player=self.game_view.player_list[self.player_active]
         self.highlight_active_player()
 
@@ -156,6 +166,7 @@ class Game:
                     self.state=GS_RANDOM_HOLE
                 else:
                     self.state=GS_WAIT_FOR_INPUT
+                    self.allow_input=True
 
         elif self.state==GS_RANDOM_HOLE:
             time_end=self.timer_end(delta_time, CARD_TIME_END)
@@ -175,12 +186,14 @@ class Game:
 
 
         elif self.state==GS_WAIT_FOR_INPUT:
-            #self.allow_input=True
-            #if self.player_input in self.get_available_hares(player):
-            #    self.reset_timer=0
-            #    self.allow_input=False
-            #    self.player_input=None
-            #    self.state=GS_SELECT_CELL
+            if self.player_input and ((self.player_input-1) in self.get_available_hares(player)):
+                print(f"your choosed a hare nr: {self.player_input}")
+                self.hare_nr=self.player_input-1
+                #self.reset_timer=0
+                self.allow_input=False
+                self.player_input=None
+                self.state=GS_SELECT_CELL
+            """
             try:
                 hare_nr=int(input("provide hare nr: "))
                 print(f"hare_nr : {hare_nr}")
@@ -191,6 +204,7 @@ class Game:
                     print("false input. try again")
             except:
                 print("except: false input. try again")
+            """
             self.reset_timer=0
 
 

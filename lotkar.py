@@ -105,6 +105,7 @@ class GameView(arcade.View):
         if key == arcade.key.ESCAPE:
             self.window.close()
         if self.game.allow_input:
+            print(f"  presed some key: {key}")
             if key in [arcade.key.NUM_1, arcade.key.KEY_1]:
                 self.game.player_input=1
             elif key in [arcade.key.NUM_2, arcade.key.KEY_2]:
@@ -112,7 +113,7 @@ class GameView(arcade.View):
             elif key in [arcade.key.NUM_3, arcade.key.KEY_3]:
                 self.game.player_input=3
             elif key in [arcade.key.NUM_4, arcade.key.KEY_4]:
-                self.game.player_input4
+                self.game.player_input=4
 
 
     def on_key_release(self, key, key_modifiers):
