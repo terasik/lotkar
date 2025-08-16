@@ -25,7 +25,12 @@ class Player:
         self.batch=Batch()
         # player nr text
         self.text_nr=None
-        self.hare_alive_cnt=None
+        self.text_hares_alive=None
+        self.text_hares_win=None
+        self.text_hares_dead=None
+        self.hares_alive=PLAYER_HARE_CNT
+        self.hares_win=0
+        self.hares_dead=0
 
     def setup(self):
         # setup hares
@@ -39,22 +44,39 @@ class Player:
         text_x=CELLS_FIELD_WIDTH+TEXT_X_OFFSET
         print(f"text_x={text_x}, text_y={text_y}")
         self.text_nr=arcade.Text(f"Spieler Nr.: {self.nr+1}", 
-                                   text_x, 
-                                   text_y,
+                                    text_x, 
+                                    text_y,
                                     font_size=TEXT_FONT_SIZE,
-                                   color=arcade.color.BLACK,
-                                   batch=self.batch)
+                                    color=arcade.color.BLACK,
+                                    batch=self.batch)
         text_y=text_y-(TEXT_SIZE+TEXT_SPACE)
-        self.hare_alive_cnt=arcade.Text(f"Hasen verfügbar: {PLAYER_HARE_CNT}", 
-                                   text_x, 
-                                   text_y, 
+        self.text_hares_alive=arcade.Text(f"Hasen verfügbar: {PLAYER_HARE_CNT}", 
+                                    text_x, 
+                                    text_y, 
                                     font_size=TEXT_FONT_SIZE,
-                                   color=arcade.color.BLACK,
-                                   batch=self.batch)
+                                    color=arcade.color.BLACK,
+                                    batch=self.batch)
+        text_y=text_y-(TEXT_SIZE+TEXT_SPACE)
+        self.text_hares_win=arcade.Text(f"Hasen gewonnen: 0", 
+                                    text_x, 
+                                    text_y, 
+                                    font_size=TEXT_FONT_SIZE,
+                                    color=arcade.color.BLACK,
+                                    batch=self.batch)
+        text_y=text_y-(TEXT_SIZE+TEXT_SPACE)
+        self.text_hares_dead=arcade.Text(f"Hasen ins Loch gefallen: 0", 
+                                    text_x, 
+                                    text_y, 
+                                    font_size=TEXT_FONT_SIZE,
+                                    color=arcade.color.BLACK,
+                                    batch=self.batch)
 
 
     def update(self, delta_time):
         self.hare_sprite_list.update(delta_time)
+        self.text_hares_alive.text=f"Hasen verfügbar: {self.hares_alive}"
+        self.text_hares_win.text=f"Hasen gewonnen: {self.hares_win}"
+        self.text_hares_dead.text=f"Hasen ins Loch gefallen: {self.hares_dead}"
 
     @classmethod
     def setup_boundary_shapes(cls):

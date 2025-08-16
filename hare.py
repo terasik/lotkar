@@ -10,6 +10,7 @@ class Hare(arcade.Sprite):
         self.nr=nr
         self.player_nr=player_nr
         self.available=True
+        self.cell_nr=-1
         self.on_play=False
         self.move_ready=False
         self.init_scale=0.23
@@ -26,7 +27,7 @@ class Hare(arcade.Sprite):
         """ calculate init width and height of hare pics """
         max_width=(WINDOW_WIDTH-CELLS_FIELD_WIDTH-2*BOUNDARY_LINE_WIDTH)//PLAYER_HARE_CNT -\
                 HARE_SPACE*PLAYER_HARE_CNT - 5
-        max_height=WINDOW_HEIGHT//PLAYER_CNT-80
+        max_height=WINDOW_HEIGHT//PLAYER_CNT-100
         scale_x=max_width/HARE_WIDTH_ORIG
         scale_y=max_height/HARE_HEIGHT_ORIG
         #print(f"scale_x={scale_x} scale_y={scale_y}")
