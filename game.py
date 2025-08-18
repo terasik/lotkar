@@ -7,6 +7,7 @@ from pyglet.graphics import Batch
 from defs import *
 from player import Player
 from cell import Cell
+from card import Card
 
 # game states
 GS_RANDOM_CARD=0
@@ -22,6 +23,12 @@ GS2TEXT=["Karte ziehen", "Warte auf Eingabe", "Bewege Hase", "PrÃ¼fe Hase", "PrÃ
 
 
 class GameCard(arcade.Sprite):
+    """
+    1 -> 23
+    2 -> 5
+    3 -> 3
+    K -> 10
+    """
 
     def __init__(self):
         self.timer_change=0
@@ -33,13 +40,13 @@ class GameCard(arcade.Sprite):
         super().__init__(visible=False, center_x=position[0], center_y=position[1])
 
     def setup(self):
-        self.textures=[arcade.load_texture(f"resources/card_{i+1}.png") for i in range(CARD_CNT)]
+        self.textures=[arcade.load_texture(f"resources/card_{i+1}.png") for i in range(CARD_TYPE_CNT)]
 
     def update(self, delta_time):
         self.timer_change+=delta_time
         self.timer_end+=delta_time
         if self.timer_change>=CARD_TIME_CHANGE:
-            card_nr=random.randrange(CARD_CNT)
+            card_nr=random.randrange(CARD_TYPE_CNT)
             self.set_texture(card_nr)
             self.timer_change=0
             self.visible=True
@@ -112,7 +119,7 @@ class Game:
                                         batch=self.batch)
 
         # cards
-        self.game_card=GameCard()
+        self.game_card=Card()
         self.game_card.setup()
         self.sprite_list.append(self.game_card)
 
@@ -164,7 +171,7 @@ class Game:
                 # wait for user input 1,2,3,4
                 self.game_card.ready=False
                 self.reset_timer=0
-                if self.game_card.card_nr==CARD_CNT-1:
+                if self.game_card.card_nr==CARD_TYPE_CNT-1:
                     self.state=GS_RANDOM_HOLE
                 else:
                     self.state=GS_WAIT_FOR_INPUT
@@ -223,7 +230,11 @@ class Game:
                     #print(f"new position: {new_position}")
                     player.hare_sprite_list[self.hare_nr].new_position=new_position
                     player.hare_sprite_list[self.hare_nr].rescale_to_cell()
+                    old_cell_nr=player.hare_sprite_list[self.hare_nr].cell_nr
+                    if old_cell_nr>=0:
+                        self.game_view.cell_list[old_cell_nr].busy=False
                     player.hare_sprite_list[self.hare_nr].cell_nr=dest_cell-1
+                    self.game_view.cell_list[dest_cell-1].busy=True
 
                     self.state=GS_MOVE_HARE
                 else:

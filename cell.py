@@ -9,6 +9,7 @@ class Cell(arcade.SpriteCircle):
     def __init__(self, nr, **kwargs):
         self.nr=nr
         self.hare=None
+        self.busy=False
         self.cell_type="green"
         color=(0,255,255)
 
