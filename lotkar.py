@@ -7,6 +7,7 @@ template.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.starting_template
 """
+import logging
 import arcade
 from defs import *
 from cell import Cell
@@ -159,4 +160,6 @@ def main():
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG, 
+                        format="%(asctime)s %(levelname)s [%(name)s %(module)s %(funcName)s] %(message)s")
     main()

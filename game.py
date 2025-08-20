@@ -1,6 +1,7 @@
 # game class
 
 #from enum import Enum
+import logging
 import random
 import arcade
 from pyglet.graphics import Batch
@@ -18,8 +19,9 @@ GS_CHECK_PLAYER=4
 GS_RANDOM_HOLE=5
 GS_SELECT_CELL=6
 GS_END_OF_GAME=7
+GS_CALC_NEXT_CELL=8
 
-GS2TEXT=["Karte ziehen", "Warte auf Eingabe", "Bewege Hase", "Prüfe Hase", "Prüfe Spieler", "Schwarzes Loch", "Warte auf ZellNr. Eingabe", "Das ist das das Ende"]
+GS2TEXT=["Karte ziehen", "Warte auf Eingabe", "Bewege Hase", "Prüfe Hase", "Prüfe Spieler", "Schwarzes Loch", "Warte auf ZellNr. Eingabe", "Das ist das das Ende", "Berechne Ziel"]
 
 
 class GameCard(arcade.Sprite):
@@ -75,11 +77,12 @@ class Game:
         self.state=GS_RANDOM_CARD
         self.allow_input=False
         self.player_input=None
-        self.hole_nr=0
+        self.hole_nr=-1
         self.hare_nr=0
         self.players_available=list(range(PLAYER_CNT))
 
     def setup(self):
+        logging.info("setup Game Klasse")
         # status section
         self.status_sprite=arcade.SpriteSolidColor(CELLS_FIELD_WIDTH,
                                                    GAME_STATUS_SPRITE_HEIGHT,
@@ -140,6 +143,7 @@ class Game:
         return False
 
     def highlight_active_player(self):
+        #logging.info("markiere spielerbereiche")
         for p in range(PLAYER_CNT):
             if p==self.player_active:
                 Player.status_sprite_list[PLAYER_CNT-p-1].color=arcade.color.GREEN
@@ -171,6 +175,7 @@ class Game:
                 # wait for user input 1,2,3,4
                 self.game_card.ready=False
                 self.reset_timer=0
+                logging.info("spielkarte ist: %s", self.game_card.card_nr)
                 if self.game_card.card_nr==CARD_TYPE_CNT-1:
                     self.state=GS_RANDOM_HOLE
                 else:
@@ -189,6 +194,7 @@ class Game:
                 if cell_nr:
                     self.game_view.cell_list[cell_nr].color=arcade.color.EERIE_BLACK
                 self.hole_nr=cell_nr
+                logging.info("schwarzes loch in der zelle nr %s", cell_nr)
                 if time_end:
                     self.time_end_cnt=0
                     self.state=GS_CHECK_HARE
@@ -200,13 +206,18 @@ class Game:
                 print("no hares available")
                 self.state=GS_CHECK_PLAYER
             else:
-                if self.player_input and ((self.player_input-1) in ahl):
-                    print(f"your choosed a hare nr: {self.player_input}")
-                    self.hare_nr=self.player_input-1
-                    #self.reset_timer=0
-                    self.allow_input=False
-                    self.player_input=None
-                    self.state=GS_SELECT_CELL
+                if self.player_input: 
+                    if (self.player_input-1) in ahl:
+                        print(f"your choosed a hare nr: {self.player_input}")
+                        
+                        self.hare_nr=self.player_input-1
+                        #self.reset_timer=0
+                        self.allow_input=False
+                        self.player_input=None
+                        #self.state=GS_SELECT_CELL
+                        self.state=GS_CALC_NEXT_CELL
+                    else:
+                        logging.error("hase nr %s ist nicht mehr im spiel", self.player_input)
             """
             try:
                 hare_nr=int(input("provide hare nr: "))
@@ -235,13 +246,42 @@ class Game:
                         self.game_view.cell_list[old_cell_nr].busy=False
                     player.hare_sprite_list[self.hare_nr].cell_nr=dest_cell-1
                     self.game_view.cell_list[dest_cell-1].busy=True
-
                     self.state=GS_MOVE_HARE
                 else:
                     print("false input. try again")
             except:
                 print("except: false input. try again")
             self.reset_timer=0
+
+
+        elif self.state==GS_CALC_NEXT_CELL:
+            if self.timer_change(delta_time, 2):
+                self.reset_timer=0
+                cell_nr_now=player.hare_sprite_list[self.hare_nr].cell_nr
+                cell_nr_next=cell_nr_now+self.game_card.card_nr+1
+                if cell_nr_next >= CELL_CNT-1:
+                    dest_cell=CELL_CNT-1
+                    print(f"hare won at the begin")
+                else:
+                    for cell_nr in range(cell_nr_next, CELL_CNT-1):
+                        if not self.game_view.cell_list[cell_nr].busy:
+                            dest_cell=cell_nr
+                            break
+                    else:
+                        dest_cell=CELL_CNT-1
+                        print(f"hare won in loop!")
+                        
+                print(f"calculated dest cell: {dest_cell}")
+
+                new_position=Cell.calc_cell_positions()[dest_cell]
+                player.hare_sprite_list[self.hare_nr].new_position=new_position
+                player.hare_sprite_list[self.hare_nr].rescale_to_cell()
+                old_cell_nr=player.hare_sprite_list[self.hare_nr].cell_nr
+                if old_cell_nr>=0:
+                    self.game_view.cell_list[old_cell_nr].busy=False
+                player.hare_sprite_list[self.hare_nr].cell_nr=dest_cell
+                self.game_view.cell_list[dest_cell].busy=True
+                self.state=GS_MOVE_HARE
 
 
         elif self.state==GS_MOVE_HARE:
@@ -257,13 +297,14 @@ class Game:
             """ 
             iterate over all players
             """
-            if self.timer_change(delta_time, 3):
+            if self.timer_change(delta_time, 2):
                 self.reset_timer=0
                 for p in self.game_view.player_list:
                     for h in p.hare_sprite_list:
                         # hare in the hole
                         if h.available and h.cell_nr==self.hole_nr:
                             print(f"hare nr. {h.nr} of player nr. {p.nr+1} is in the hole")
+                            self.game_view.cell_list[h.cell_nr].busy=False
                             h.available=False
                             h.visible=False
                             p.hares_alive-=1
@@ -271,6 +312,7 @@ class Game:
                         # hare at the end
                         if h.available and h.cell_nr>=CELL_CNT-1:
                             print(f"hare nr. {h.nr} of player nr. {p.nr+1} won")
+                            self.game_view.cell_list[h.cell_nr].busy=False
                             h.available=False
                             h.visible=False
                             p.hares_alive-=1
@@ -278,7 +320,7 @@ class Game:
                 self.state=GS_CHECK_PLAYER
 
         elif self.state==GS_CHECK_PLAYER:
-            if self.timer_change(delta_time, 3):
+            if self.timer_change(delta_time, 2):
                 self.reset_timer=0
                 self.check_players()
                 for t in range(PLAYER_CNT):
@@ -293,7 +335,7 @@ class Game:
                     self.state=GS_END_OF_GAME
 
         elif self.state==GS_END_OF_GAME:
-            if self.timer_change(delta_time, 3):
+            if self.timer_change(delta_time, 2):
                 self.reset_timer=0
                 print("press ESC button to let me free")
 

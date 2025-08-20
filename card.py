@@ -1,5 +1,6 @@
 # game cards
 
+import logging
 import random
 import arcade
 from pyglet.graphics import Batch
@@ -48,11 +49,13 @@ class Card(arcade.Sprite):
                     self.new_deck()
                 self.ready=True
                 print(f"card nr: {self.card_nr}, deck_nr: {deck_nr}, deck_len: {self.deck_len}")
+                logging.info("neue karte: %s, im deck noch karten: %s", self.card_nr, self.deck_len)
 
     def _update(self):
         pass
 
     def new_deck(self):
+        logging.info("neues kartenstapel wird erzeugt")
         self.deck.clear()
         scc=[0 for c in range(CARD_TYPE_CNT)]
         for cc in range(sum(CARD_CNT)):
