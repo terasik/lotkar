@@ -106,7 +106,7 @@ class GameView(arcade.View):
         if key == arcade.key.ESCAPE:
             self.window.close()
         if self.game.allow_input:
-            print(f"  presed some key: {key}")
+            logging.info("taste %s gedrückt", key)
             if key in [arcade.key.NUM_1, arcade.key.KEY_1]:
                 self.game.player_input=1
             elif key in [arcade.key.NUM_2, arcade.key.KEY_2]:
@@ -145,6 +145,7 @@ class GameView(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
+    logging.info("starte ein gutes, ein genaues Spiel")
     window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
     # Create and setup the GameView
@@ -155,11 +156,12 @@ def main():
     window.show_view(game)
 
     # Start the arcade game loop
+    logging.info("gehe in die arcade schleife rein")
     arcade.run()
 
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG, 
-                        format="%(asctime)s %(levelname)s [%(name)s %(module)s %(funcName)s] %(message)s")
+    logging.basicConfig(level=logging.INFO, 
+                        format="%(asctime)s %(levelname)s [%(module)s %(funcName)s] %(message)s")
     main()

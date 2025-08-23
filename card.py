@@ -15,6 +15,7 @@ class Card(arcade.Sprite):
     """
 
     def __init__(self):
+        logging.info("init Card instanz")
         self.timer_change=0
         self.timer_end=0
         self.card_nr=0
@@ -48,7 +49,7 @@ class Card(arcade.Sprite):
                 if not self.deck_len:
                     self.new_deck()
                 self.ready=True
-                print(f"card nr: {self.card_nr}, deck_nr: {deck_nr}, deck_len: {self.deck_len}")
+                #print(f"card nr: {self.card_nr}, deck_nr: {deck_nr}, deck_len: {self.deck_len}")
                 logging.info("neue karte: %s, im deck noch karten: %s", self.card_nr, self.deck_len)
 
     def _update(self):

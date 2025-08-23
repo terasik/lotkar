@@ -1,5 +1,6 @@
 # hier will be player class
 
+import logging
 import arcade 
 from pyglet.graphics import Batch
 from defs import *
@@ -19,6 +20,7 @@ class Player:
     status_sprite_list=arcade.SpriteList()
 
     def __init__(self, nr, color, **kwargs):
+        logging.info("init Player instanz mit nr=%s color=%s", nr, color)
         self.hare_sprite_list=arcade.SpriteList()
         self.color=color
         self.nr=nr
@@ -42,7 +44,7 @@ class Player:
         # setup text
         text_y=WINDOW_HEIGHT-((WINDOW_HEIGHT*self.nr)//PLAYER_CNT)-TEXT_SIZE-TEXT_Y_OFFSET
         text_x=CELLS_FIELD_WIDTH+TEXT_X_OFFSET
-        print(f"text_x={text_x}, text_y={text_y}")
+        #print(f"text_x={text_x}, text_y={text_y}")
         self.text_nr=arcade.Text(f"Spieler Nr.: {self.nr+1}", 
                                     text_x, 
                                     text_y,

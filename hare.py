@@ -1,11 +1,13 @@
 # hare class
 # hare 256x341 -> 64x85
+import logging
 import arcade
 from defs import *
 
 class Hare(arcade.Sprite):
 
     def __init__(self, color, nr, player_nr, **kwargs):
+        logging.info("init Hare instanz mit color=%s nr=%s pl_nr=%s", color, nr, player_nr)
         self.hare_color=color
         self.nr=nr
         self.player_nr=player_nr
