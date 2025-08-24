@@ -109,7 +109,6 @@ class Game:
         return False
 
     def highlight_active_player(self):
-        #logging.info("markiere spielerbereiche")
         for p in range(PLAYER_CNT):
             if p==self.player_active:
                 Player.status_sprite_list[PLAYER_CNT-p-1].color=arcade.color.GREEN
@@ -119,13 +118,12 @@ class Game:
 
     def get_available_hares(self, player):
         ahl=[c for c,h in enumerate(player.hare_sprite_list) if h.available]
-        #print(f"av. hares: {ahl}")
         return ahl
 
 
     def update(self, delta_time):
         self.play_time+=delta_time
-        self.reset_timer+=delta_time
+        #self.reset_timer+=delta_time
         self.text_play_time.text=f"Zeit: {int(self.play_time)//60:>4}m {int(self.play_time)%60:>2}s"
         self.text_player_active.text=f"Spieler aktiv: {self.player_active+1}"
         self.text_state.x=self.text_player_active.content_width+50
@@ -140,7 +138,7 @@ class Game:
             if self.game_card.ready:
                 # wait for user input 1,2,3,4
                 self.game_card.ready=False
-                self.reset_timer=0
+                #self.reset_timer=0
                 logging.info("spielkarte ist: %s", self.game_card.card_nr)
                 if self.game_card.card_nr==CARD_TYPE_CNT-1:
                     self.state=GS_RANDOM_HOLE
@@ -152,9 +150,7 @@ class Game:
             time_end=self.timer_end(delta_time, CARD_TIME_END)
             if self.timer_change(delta_time, CARD_TIME_CHANGE):
                 cell_nr=random.choice(CELL_DANGEROUS+(-1,))
-                #print(f"--- cell_nr: {cell_nr}")
-                #print(f"--- hole_nr: {self.hole_nr}")
-                self.reset_timer=0
+                #self.reset_timer=0
                 if self.hole_nr>0:
                     self.game_view.cell_list[self.hole_nr].color=arcade.color.RED
                 if cell_nr>0:
@@ -169,8 +165,7 @@ class Game:
         elif self.state==GS_WAIT_FOR_INPUT:
             ahl=self.get_available_hares(player)
             if not ahl:
-                #print("no hares available")
-                logging.info("keine hasen beim spieler %s verfügbar", player.nr)
+                logging.warning("keine hasen beim spieler %s verfügbar", player.nr)
                 self.state=GS_CHECK_PLAYER
             else:
                 if self.player_input: 
@@ -182,9 +177,9 @@ class Game:
                         #self.state=GS_SELECT_CELL
                         self.state=GS_CALC_NEXT_CELL
                     else:
-                        logging.error("hase nr %s ist nicht mehr im spiel", self.player_input)
+                        logging.warning("hase nr %s ist nicht mehr im spiel", self.player_input)
                     self.player_input=None
-            self.reset_timer=0
+            #self.reset_timer=0
 
 
         elif self.state==GS_SELECT_CELL:
@@ -211,17 +206,21 @@ class Game:
         elif self.state==GS_CALC_NEXT_CELL:
             if self.timer_change(delta_time, 2):
                 logging.info("status GS_CALC_NEXT_CELL wird verarbeitet")
-                self.reset_timer=0
+                #self.reset_timer=0
                 cell_nr_now=player.hare_sprite_list[self.hare_nr].cell_nr
                 cell_nr_next=cell_nr_now+self.game_card.card_nr+1
                 if cell_nr_next >= CELL_CNT-1:
                     dest_cell=CELL_CNT-1
                     logging.info(f"berechnung zeigt, dass hase gewinnen wird")
                 else:
-                    for cell_nr in range(cell_nr_next, CELL_CNT-1):
+                    cell_cnt=0
+                    for cell_nr in range(cell_nr_now+1, CELL_CNT-1):
                         if not self.game_view.cell_list[cell_nr].busy:
-                            dest_cell=cell_nr
-                            break
+                            if cell_cnt==self.game_card.card_nr:
+                                dest_cell=cell_nr
+                                break
+                            else:
+                                cell_cnt+=1
                     else:
                         dest_cell=CELL_CNT-1
                         logging.info(f"berechnung in der schleife und hase wird gewinnen")
@@ -245,7 +244,7 @@ class Game:
         elif self.state==GS_MOVE_HARE:
 
             if player.hare_sprite_list[self.hare_nr].move_ready:
-                logging.info("hase %s des spielers %s ist am ziel angekommen", player.nr, self.hare_nr)
+                logging.info("hase %s des spielers %s ist an der zelle angekommen", player.nr, self.hare_nr)
                 self.state=GS_CHECK_HARE
             else:
                 self.reset_timer=0
@@ -258,7 +257,7 @@ class Game:
             """
             if self.timer_change(delta_time, 2):
                 logging.info("status GS_CHECK_HARE wird verarbeitet")
-                self.reset_timer=0
+                #self.reset_timer=0
                 for p in self.game_view.player_list:
                     for h in p.hare_sprite_list:
                         # hare in the hole
@@ -284,7 +283,7 @@ class Game:
         elif self.state==GS_CHECK_PLAYER:
             if self.timer_change(delta_time, 2):
                 logging.info("status GS_CHECK_PLAYER wird verarbeitet")
-                self.reset_timer=0
+                #self.reset_timer=0
                 self.check_players()
                 for t in range(PLAYER_CNT):
                     self.player_active+=1
@@ -295,19 +294,18 @@ class Game:
                         logging.info("nächster spieler ist %s", self.player_active)
                         break
                 else:
-                    #print("end of game")
                     logging.info("ende des spiels ist erreicht")
                     self.state=GS_END_OF_GAME
 
         elif self.state==GS_END_OF_GAME:
             if self.timer_change(delta_time, 2):
-                self.reset_timer=0
+                #self.reset_timer=0
                 logging.info("press ESC button to let me free")
 
 
-        if self.reset_timer>=GAME_RESET_TIME:
-            logging.info("reset timer zeit ist erreicht")
-            self.state=GS_RANDOM_CARD
+        #if self.reset_timer>=GAME_RESET_TIME:
+        #    logging.info("reset timer zeit ist erreicht")
+        #    self.state=GS_RANDOM_CARD
 
     def check_players(self):
         apl=[]
