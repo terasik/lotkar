@@ -111,9 +111,13 @@ class Game:
     def highlight_active_player(self):
         for p in range(PLAYER_CNT):
             if p==self.player_active:
+                player_color=C2AC[PLAYER_PROPS[p]["color"]]
                 Player.status_sprite_list[PLAYER_CNT-p-1].color=arcade.color.GREEN
+                #Player.status_sprite_list[PLAYER_CNT-p-1].color=player_color
+                #Player.status_sprite_list[PLAYER_CNT-p-1].alpha=154
             else:
                 Player.status_sprite_list[PLAYER_CNT-p-1].color=arcade.color.WHITE
+                #Player.status_sprite_list[PLAYER_CNT-p-1].alpha=255
 
 
     def get_available_hares(self, player):

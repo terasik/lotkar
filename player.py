@@ -13,7 +13,7 @@ TEXT_Y_OFFSET=BOUNDARY_LINE_WIDTH+5
 TEXT_SIZE=22
 TEXT_FONT_SIZE=(TEXT_SIZE*3)//4
 """
-
+SOME_NAMES=["Lakimurq", "Avande", "Huzret", "Lerfa"]
 
 class Player:
 
@@ -24,6 +24,7 @@ class Player:
         self.hare_sprite_list=arcade.SpriteList()
         self.color=color
         self.nr=nr
+        self.name=kwargs.get("name", SOME_NAMES[nr])
         self.batch=Batch()
         # player nr text
         self.text_nr=None
@@ -45,7 +46,7 @@ class Player:
         text_y=WINDOW_HEIGHT-((WINDOW_HEIGHT*self.nr)//PLAYER_CNT)-TEXT_SIZE-TEXT_Y_OFFSET
         text_x=CELLS_FIELD_WIDTH+TEXT_X_OFFSET
         #print(f"text_x={text_x}, text_y={text_y}")
-        self.text_nr=arcade.Text(f"Spieler Nr.: {self.nr+1}", 
+        self.text_nr=arcade.Text(f"Spieler {self.nr+1}: {self.name}", 
                                     text_x, 
                                     text_y,
                                     font_size=TEXT_FONT_SIZE,

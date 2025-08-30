@@ -43,7 +43,7 @@ class Hare(arcade.Sprite):
         x=CELLS_FIELD_WIDTH+BOUNDARY_LINE_WIDTH+\
                 (self.init_width//2)+(self.nr-1)*(self.init_width+HARE_SPACE)
         y=WINDOW_HEIGHT-((WINDOW_HEIGHT*(self.player_nr+1))//PLAYER_CNT)+\
-                BOUNDARY_LINE_WIDTH+HARE_SPACE+(self.init_height//2)
+                BOUNDARY_LINE_WIDTH+HARE_SPACE//2+(self.init_height//2)
         #print(f"hare nr={self.nr} pl={self.player_nr} init_x={x} init_y={y}")
         return (x, y)
 

@@ -15,7 +15,7 @@ from player import Player
 from game import Game
 
 CELL_POSITIONS=Cell.calc_cell_positions()
-
+#test_sound=arcade.Sound("resources/blt.mp3")
 
 class GameView(arcade.View):
     """
@@ -28,7 +28,8 @@ class GameView(arcade.View):
 
     def __init__(self):
         super().__init__()
-        self.background_color = arcade.color.AMAZON
+        #self.background_color = arcade.color.AMAZON
+        self.background = arcade.load_texture("resources/c2.png")
         # If you have sprite lists, you should create them here,
         # and set them to None
         self.cell_list = arcade.SpriteList()
@@ -51,9 +52,10 @@ class GameView(arcade.View):
         Player.setup_boundary_shapes()
 
         for p in range(PLAYER_CNT):
-            player=Player(p, PLAYER_PROPS[p]["color"])
+            player=Player(p, PLAYER_PROPS[p]["color"], name=PLAYER_PROPS[p]["name"])
             player.setup()
             self.player_list.append(player)
+        #test_sound.play(loop=True)
 
 
     def reset(self):
@@ -69,7 +71,10 @@ class GameView(arcade.View):
         # This command should happen before we start drawing. It will clear
         # the screen to the background color, and erase what we drew last frame.
         self.clear()
-
+        arcade.draw_texture_rect(
+            self.background,
+            arcade.LBWH(0, 80, WINDOW_WIDTH*3/4, WINDOW_HEIGHT),
+        )
         # Call draw() on all your sprite lists below
         #self.game.sprite_list.draw()
         #self.game.batch.draw()
