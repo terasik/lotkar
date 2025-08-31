@@ -8,36 +8,56 @@ from arcade.gui import (
     UIInputText,
     UIAnchorLayout,
     UIView,
+    UIBoxLayout,
+    UILabel
 )
 
-class MenuPlayerCnt:
+class PlayersConfig:
     """
-    class to player count select in menu view
+    players config class
     """
     pass
 
+# some UI widgets
+btn_up_pic=arcade.load_texture("resources/arrow_basic_n_small.png")
+btn_down_pic=arcade.load_texture("resources/arrow_basic_s_small.png")
 
 class MenuView(arcade.View):
 
     def __init__(self):
         super().__init__()
-        self.background=arcade.color.AZURE
+        self.background_color=arcade.color.GRAY
         self.player_cnt_selection=arcade.SpriteList()
         # Create a UIManager
         self.ui = UIManager()
+        # main box
+        main_box=UIBoxLayout(vertical=True, align="center", space_between=20)
+        # title
+        lbl_title=UILabel(text="Menü Ansicht", width=600, align="center", font_size=32, text_color=arcade.color.BLACK, bold=True)
+        # append title label to main box
+        main_box.add(lbl_title)
+        # buttons
+        btn_up=UITextureButton(texture=btn_up_pic)
+        btn_down=UITextureButton(texture=btn_down_pic)
+        # buttons box
+        up_down_box=UIBoxLayout(space_between=10)
+        up_down_box.add(btn_up)
+        up_down_box.add(btn_down)
+        # players count
+        lbl_player_cnt_gen=UILabel(text="Anzahl Spieler", width=200, align="left", text_color=arcade.color.BLACK, font_size=22)
+        lbl_player_cnt_show=UILabel(text="1", text_color=arcade.color.AMAZON, font_size=22, width=200, bold=True)
+        player_cnt_box=UIBoxLayout(vertical=False, align="left", space_between=20)
 
         # Create an anchor layout, which can be used to position widgets on screen
         anchor = self.ui.add(UIAnchorLayout())
-        name_box=anchor.add(UIInputText(text_color=(0,0,0)), anchor_x="left", anchor_y="top", align_y=-100)
-        name_box_2=anchor.add(UIInputText(text_color=(255,0,0)), anchor_x="left", anchor_y="top", align_y=-200)
-        print("anchor: ", anchor.children)
-        #anchor.do_layout()
-        @name_box.event("on_change")
-        def on_change(event):
-            print("changed text in inputbox: ", event)
-        @name_box_2.event("on_change")
-        def on_change(event):
-            print("changed text in inputbox 2: ", event)
+        # players count line
+        player_cnt_box.add(lbl_player_cnt_gen)
+        player_cnt_box.add(up_down_box)
+        player_cnt_box.add(lbl_player_cnt_show)
+        # add players cnt line to main box
+        main_box.add(player_cnt_box)
+        # add players count line to anchor
+        anchor.add(main_box, anchor_x="center")
 
     def on_show_view(self) -> None:
         self.ui.enable()
@@ -47,7 +67,7 @@ class MenuView(arcade.View):
 
     def on_draw(self):
         # Clear the screen
-        self.clear(color=arcade.color.AZURE)
+        self.clear()
 
         # Add draw commands that should be below the UI
         # ...
