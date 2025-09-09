@@ -16,14 +16,15 @@ CELL_DANGEROUS=(3,6,9, 12, 15, 18, 20, 22)
 CELL_RADIUS=50
 
 # players
-PLAYER_CNT=4
+PLAYER_CNT=2
 PLAYER_CNT_MAX=4
 PLAYER_CNT_MIN=1
 PLAYER_HARE_CNT=3
-PLAYER_PROPS=[{"color": "red", "name": "Bruno", "arcade_color": color.AZURE}, 
-              {"color": "black", "name": "Zukti", "arcade_color": color.DARK_VIOLET}, 
-              {"color": "orange", "name": "Arsen", "arcade_color": color.CRIMSON }, 
-              {"color": "yellow", "name": "Ganta","arcade_color": color.DARK_PASTEL_GREEN}]
+PLAYER_PROPS=[#{"color": "lila", "name": "Fima", "arcade_color": color.AZURE}, 
+              {"color": "black", "name": "Raja", "arcade_color": color.DARK_VIOLET}, 
+              {"color": "orange", "name": "Papa", "arcade_color": color.CRIMSON }, 
+              #{"color": "yellow", "name": "Papa","arcade_color": color.DARK_PASTEL_GREEN}
+              ]
 
 # colors
 # orange -> WILLPOWER_ORANGE, PORTLAND_ORANGE
@@ -53,6 +54,13 @@ TEXT_FONT_SIZE=(TEXT_SIZE*3)//4
 HARE_WIDTH_ORIG=256
 HARE_HEIGHT_ORIG=341
 HARE_SPACE=5
+HARE_COLORS=["blue",
+             "lila",
+             "red",
+             "green",
+             "orange",
+             "yellow",
+             "black"]
 
 # tests
 TEST_POS=[(0,16, 24), (3, 9, 17)]
@@ -68,3 +76,6 @@ CARD_TIME_CHANGE=0.2
 CARD_TIME_END=3.0
 CARD_CNT=[23, 7, 3, 10]
 
+# bkg
+BKG_PIC_NORM="resources/bkg_norm.png"
+BKG_PIC_WON="resources/bkg_won.png"
