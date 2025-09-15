@@ -12,24 +12,17 @@ from arcade.gui import (
     UIBoxLayout,
     UILabel
 )
+from plconfig import PlayerConfig
+from helpers import create_up_down_box
 
-# button textures
-btn_up_pic=arcade.load_texture("resources/arrow_basic_n_small.png")
-btn_down_pic=arcade.load_texture("resources/arrow_basic_s_small.png")
 
-# players_config
-
-class ModInpText(UIInputText):
-    def __init__(self, nr, **kwargs):
-        self.nr=nr
-        super().__init__(**kwargs)
 
 class MenuView(arcade.View):
 
     def __init__(self):
         super().__init__()
         self.background_color=arcade.color.GRAY
-        self.player_cnt_selection=arcade.SpriteList()
+        #self.player_cnt_selection=arcade.SpriteList()
         # Create a UIManager
         self.ui = UIManager()
         # main box
@@ -48,60 +41,18 @@ class MenuView(arcade.View):
 
         # players count line
         player_cnt_box.add(lbl_player_cnt_gen)
-        player_cnt_box.add(self._create_up_down_box())
+        player_cnt_box.add(create_up_down_box())
         player_cnt_box.add(lbl_player_cnt_show)
         # add players cnt line to main box
         self.main_box.add(player_cnt_box)
 
         # add player line
-        self.main_box.add(self._create_player_line())
-        self.main_box.add(self._create_player_line(1))
-        #self.main_box.add(self._create_player_line(2))
-        #self.main_box.add(self._create_player_line(3))
+        for player_nr in range(2):
+            player_config=PlayerConfig(player_nr)
+            self.main_box.add(player_config.setup_menu())
 
         # add players count line to anchor
         self.anchor.add(self.main_box, anchor_x="center")
-
-    def _create_up_down_box(self):
-        # buttons
-        btn_up=UITextureButton(texture=btn_up_pic)
-        btn_down=UITextureButton(texture=btn_down_pic)
-        # buttons box
-        up_down_box=UIBoxLayout(space_between=10)
-        up_down_box.add(btn_up)
-        up_down_box.add(btn_down)
-        return up_down_box
-
-    def _create_player_line(self, nr=0):
-        player_prop_line=UIBoxLayout(vertical=False, align="left", space_between=25)
-        lbl_player_nr=UILabel(text=f"Spieler {nr+1}", align="left", text_color=arcade.color.BLACK, font_size=22)
-        hare_up_down_box=self._create_up_down_box()
-        hare_images=UIImage(texture=hare_images[nr], width=64, height=85)
-        lbl_name=UILabel(text=f"Name", align="left", text_color=arcade.color.BLACK, font_size=22)
-        inp_name=ModInpText(nr, text_color=arcade.color.BLACK)
-        @inp_name.event("on_change")
-        def inp_name_change(event):
-            logging.info("change event %s", event.source.nr)
-            #logging.info("on_change event: %s", event)
-        @inp_name.event("on_click")
-        def inp_name_click(event):
-            logging.info("click event: %s", event.source.nr)
-            for s in self.name_inps:
-                if s.nr == event.source.nr:
-                    event.source.activate()
-                else:
-                    s.deactivate()
-            #event.source.activate()
-        self.name_inps.append(inp_name)
-        player_prop_line.add(lbl_player_nr)
-        player_prop_line.add(hare_up_down_box)
-        player_prop_line.add(hare_images)
-        player_prop_line.add(lbl_name)
-        player_prop_line.add(inp_name)
-
-        return player_prop_line
-
-
 
 
     def on_show_view(self) -> None:
