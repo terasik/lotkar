@@ -14,14 +14,16 @@ from arcade.gui import (
 )
 from plconfig import PlayerConfig
 from helpers import create_up_down_box
+from defs import PLAYER_CNT_MAX, PLAYER_CNT_MIN
 
-
+player_configs=[]
 
 class MenuView(arcade.View):
 
     def __init__(self):
         super().__init__()
         self.background_color=arcade.color.GRAY
+        self.player_cnt=PLAYER_CNT_MIN
         #self.player_cnt_selection=arcade.SpriteList()
         # Create a UIManager
         self.ui = UIManager()
@@ -36,23 +38,54 @@ class MenuView(arcade.View):
         self.main_box.add(lbl_title)
         # players count
         lbl_player_cnt_gen=UILabel(text="Anzahl Spieler", width=200, align="left", text_color=arcade.color.BLACK, font_size=22)
-        lbl_player_cnt_show=UILabel(text="1", text_color=arcade.color.AMAZON, font_size=22, width=200, bold=True)
+        self.lbl_player_cnt_show=UILabel(text="1", text_color=arcade.color.AMAZON, font_size=22, width=200, bold=True)
         player_cnt_box=UIBoxLayout(vertical=False, align="left", space_between=25)
 
         # players count line
         player_cnt_box.add(lbl_player_cnt_gen)
-        player_cnt_box.add(create_up_down_box())
-        player_cnt_box.add(lbl_player_cnt_show)
+        #player_cnt_box.add(create_up_down_box())
+        player_cnt_box.add(self.setup_player_cnt())
+        player_cnt_box.add(self.lbl_player_cnt_show)
         # add players cnt line to main box
         self.main_box.add(player_cnt_box)
-
-        # add player line
-        for player_nr in range(2):
-            player_config=PlayerConfig(player_nr)
-            self.main_box.add(player_config.setup_menu())
+            
+        self.setup_player_config()
 
         # add players count line to anchor
         self.anchor.add(self.main_box, anchor_x="center")
+
+    def setup_player_cnt(self):
+        logging.info("setup player count")
+        def inc_pl_cnt(event):
+            self.player_cnt+=1
+            if self.player_cnt>PLAYER_CNT_MAX:
+                self.player_cnt=PLAYER_CNT_MAX
+            else:
+                logging.info("adding player config")
+                self.main_box.add(player_configs[self.player_cnt-1])
+            self.lbl_player_cnt_show.text=self.player_cnt
+            logging.info("increase player count +++")
+        def dec_pl_cnt(event):
+            self.player_cnt-=1
+            if self.player_cnt<PLAYER_CNT_MIN:
+                self.player_cnt=PLAYER_CNT_MIN
+            else:
+                logging.info("removing player config")
+                self.main_box.remove(player_configs[self.player_cnt])
+            self.lbl_player_cnt_show.text=self.player_cnt
+            logging.info("decrease player count ---")
+        return create_up_down_box(inc_pl_cnt,dec_pl_cnt)
+
+    def setup_player_config(self):
+        logging.info("setup player config")
+        # add player line
+        for player_nr in range(PLAYER_CNT_MAX):
+            player_config=PlayerConfig(player_nr)
+            player_configs.append(player_config.setup_menu())
+
+        for player_nr in range(self.player_cnt):
+            self.main_box.add(player_configs[player_nr])
+
 
 
     def on_show_view(self) -> None:

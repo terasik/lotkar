@@ -12,6 +12,8 @@ from arcade.gui import (
 from defs import *
 from helpers import name_text_inputs, hare_textures, create_up_down_box, ModInpText
 
+hare_len=len(hare_textures)
+
 
 class PlayerConfig:
 
@@ -19,6 +21,8 @@ class PlayerConfig:
         self.nr=nr
         self.color_nr=0
         self.name=f"unknown_{nr+1}"
+        self.prop_line=None
+        self.hare_image=None
 
     def setup_menu(self):
         player_prop_line=UIBoxLayout(vertical=False, align="left", space_between=25)
@@ -46,5 +50,14 @@ class PlayerConfig:
         player_prop_line.add(hare_image)
         player_prop_line.add(lbl_name)
         player_prop_line.add(name_input)
+        self.hare_image=hare_image
+        self.prop_line=player_prop_line
         return player_prop_line
+
+    def setup_hare_choice(self):
+        def inc_hare_image(event):
+            pass
+        pass
+
+
 
