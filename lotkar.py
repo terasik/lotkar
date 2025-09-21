@@ -26,9 +26,11 @@ class GameView(arcade.View):
     with your own code. Don't leave 'pass' in this program.
     """
 
-    def __init__(self):
+    def __init__(self, player_cnt, player_configs):
         super().__init__()
         #self.background_color = arcade.color.AMAZON
+        self.player_configs=player_configs
+        self.player_cnt=player_cnt
         self.background = arcade.load_texture("resources/c2.png")
         # If you have sprite lists, you should create them here,
         # and set them to None
@@ -51,23 +53,21 @@ class GameView(arcade.View):
         Player.setup_status_sprites()
         Player.setup_boundary_shapes()
 
-        for p in range(PLAYER_CNT):
-            player=Player(p, PLAYER_PROPS[p]["color"], name=PLAYER_PROPS[p]["name"])
+        #for p in range(PLAYER_CNT):
+        for p in range(self.player_cnt):
+            player_config=self.player_configs[p]
+            color=HARE_COLORS[player_config.color_nr]
+            name=player_config.name
+            player=Player(p, color, name=name)
             player.setup()
             self.player_list.append(player)
         #test_sound.play(loop=True)
 
 
-    def reset(self):
-        """Reset the game to the initial state."""
-        # Do changes needed to restart the game here if you want to support that
-        pass
-
     def on_draw(self):
         """
         Render the screen.
         """
-
         # This command should happen before we start drawing. It will clear
         # the screen to the background color, and erase what we drew last frame.
         self.clear()
@@ -88,7 +88,6 @@ class GameView(arcade.View):
             p.batch.draw()
             #p.player_nr_text.draw()
                         
-        
 
     def on_update(self, delta_time):
         """
@@ -100,6 +99,7 @@ class GameView(arcade.View):
         for p in self.player_list:
             p.update(delta_time)
         pass
+
 
     def on_key_press(self, key, key_modifiers):
         """
@@ -121,30 +121,6 @@ class GameView(arcade.View):
             elif key in [arcade.key.NUM_4, arcade.key.KEY_4]:
                 self.game.player_input=4
 
-
-    def on_key_release(self, key, key_modifiers):
-        """
-        Called whenever the user lets off a previously pressed key.
-        """
-        pass
-
-    def on_mouse_motion(self, x, y, delta_x, delta_y):
-        """
-        Called whenever the mouse moves.
-        """
-        pass
-
-    def on_mouse_press(self, x, y, button, key_modifiers):
-        """
-        Called when the user presses a mouse button.
-        """
-        pass
-
-    def on_mouse_release(self, x, y, button, key_modifiers):
-        """
-        Called when a user releases a mouse button.
-        """
-        pass
 
 
 def main():

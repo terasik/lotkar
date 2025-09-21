@@ -10,26 +10,39 @@ from arcade.gui import (
     UILabel
 )
 from defs import *
-from helpers import name_text_inputs, hare_textures, create_up_down_box, ModInpText
+from helpers import (
+    name_text_inputs, 
+    hare_textures, 
+    create_up_down_box, 
+    ModInpText
+)
 
-hare_len=len(hare_textures)
+COLOR_CNT_MAX=len(HARE_COLORS)
 
 
 class PlayerConfig:
 
     def __init__(self, nr):
         self.nr=nr
-        self.color_nr=0
+        self.color_nr=nr
         self.name=f"unknown_{nr+1}"
         self.prop_line=None
         self.hare_image=None
 
     def setup_menu(self):
-        player_prop_line=UIBoxLayout(vertical=False, align="left", space_between=25)
-        lbl_player_nr=UILabel(text=f"Spieler {self.nr+1}", align="left", text_color=arcade.color.BLACK, font_size=22)
-        hare_up_down_box=create_up_down_box()
+        player_prop_line=UIBoxLayout(vertical=False, 
+                                     align="left", 
+                                     space_between=25)
+        lbl_player_nr=UILabel(text=f"Spieler {self.nr+1}", 
+                              align="left", 
+                              text_color=arcade.color.BLACK, 
+                              font_size=22)
+        hare_up_down_box=self.setup_hare_choice()
         hare_image=UIImage(texture=hare_textures[self.nr], width=64, height=85)
-        lbl_name=UILabel(text=f"Name", align="left", text_color=arcade.color.BLACK, font_size=22)
+        lbl_name=UILabel(text=f"Name", 
+                         align="left", 
+                         text_color=arcade.color.BLACK, 
+                         font_size=22)
         name_input=ModInpText(self.nr, text_color=arcade.color.BLACK)
         #name_input=name_text_inputs[self.nr]
         @name_input.event("on_change")
@@ -56,8 +69,18 @@ class PlayerConfig:
 
     def setup_hare_choice(self):
         def inc_hare_image(event):
-            pass
-        pass
+            self.color_nr+=1
+            if self.color_nr>=COLOR_CNT_MAX:
+                self.color_nr=COLOR_CNT_MAX-1
+            self.hare_image.texture=hare_textures[self.color_nr]
+            logging.info("hare color changed (+) to nr %s (%s)", self.color_nr, HARE_COLORS[self.color_nr])
+        def dec_hare_image(event):
+            self.color_nr-=1
+            if self.color_nr<=0:
+                self.color_nr=0
+            self.hare_image.texture=hare_textures[self.color_nr]
+            logging.info("hare color changed (-) to nr %s (%s)", self.color_nr, HARE_COLORS[self.color_nr])
+        return create_up_down_box(inc_hare_image,dec_hare_image)
 
 
 
