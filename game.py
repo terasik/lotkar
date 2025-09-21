@@ -282,10 +282,12 @@ class Game:
                             h.visible=False
                             p.hares_alive-=1
                             p.hares_win+=1
+                            self.game_view.bkg=self.game_view.bkg_pic_won
                 self.state=GS_CHECK_PLAYER
 
         elif self.state==GS_CHECK_PLAYER:
             if self.timer_change(delta_time, 2):
+                self.game_view.bkg=self.game_view.bkg_pic_norm
                 logging.info("status GS_CHECK_PLAYER wird verarbeitet")
                 #self.reset_timer=0
                 self.check_players()

@@ -31,7 +31,9 @@ class GameView(arcade.View):
         #self.background_color = arcade.color.AMAZON
         self.player_configs=player_configs
         self.player_cnt=player_cnt
-        self.background = arcade.load_texture("resources/c2.png")
+        self.bkg_pic_norm = arcade.load_texture(BKG_PIC_NORM)
+        self.bkg_pic_won = arcade.load_texture(BKG_PIC_WON)
+        self.bkg=self.bkg_pic_norm
         # If you have sprite lists, you should create them here,
         # and set them to None
         self.cell_list = arcade.SpriteList()
@@ -72,7 +74,7 @@ class GameView(arcade.View):
         # the screen to the background color, and erase what we drew last frame.
         self.clear()
         arcade.draw_texture_rect(
-            self.background,
+            self.bkg,
             arcade.LBWH(0, 80, WINDOW_WIDTH*3/4, WINDOW_HEIGHT),
         )
         # Call draw() on all your sprite lists below
