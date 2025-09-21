@@ -25,6 +25,7 @@ class MenuView(arcade.View):
         super().__init__()
         self.background_color=arcade.color.GRAY
         self.player_cnt=PLAYER_CNT_MIN
+        self.player_prop_lines=[]
         self.player_configs=[]
         #self.player_cnt_selection=arcade.SpriteList()
         # Create a UIManager
@@ -68,7 +69,7 @@ class MenuView(arcade.View):
         self.setup_player_config()
 
         # add players count line to anchor
-        self.anchor.add(self.main_box, anchor_x="center", anchor_y="top")
+        self.anchor.add(self.main_box, anchor_x="center", anchor_y="top", align_y=-20)
         self.setup_exit_button()
         self.setup_play_button()
 
@@ -80,7 +81,7 @@ class MenuView(arcade.View):
                 self.player_cnt=PLAYER_CNT_MAX
             else:
                 logging.info("adding player config")
-                self.main_box.add(self.player_configs[self.player_cnt-1])
+                self.main_box.add(self.player_prop_lines[self.player_cnt-1])
             self.lbl_player_cnt_show.text=self.player_cnt
             logging.info("increase player count (+) to %s", self.player_cnt)
         def dec_pl_cnt(event):
@@ -89,7 +90,7 @@ class MenuView(arcade.View):
                 self.player_cnt=PLAYER_CNT_MIN
             else:
                 logging.info("removing player config")
-                self.main_box.remove(self.player_configs[self.player_cnt])
+                self.main_box.remove(self.player_prop_lines[self.player_cnt])
             self.lbl_player_cnt_show.text=self.player_cnt
             logging.info("decrease player count (-) to %s", self.player_cnt)
         return create_up_down_box(inc_pl_cnt,dec_pl_cnt)
@@ -116,7 +117,8 @@ class MenuView(arcade.View):
         @start_btn.event("on_click")
         def start_game(event):
             logging.info("starting game!")
-            game_view=GameView(self.player_cnt,self.player_configs)
+            game_view=GameView(self.player_cnt,self.placonfigs)
+            game_view.setup()
             self.window.show_view(game_view)
 
     def setup_player_config(self):
@@ -124,10 +126,11 @@ class MenuView(arcade.View):
         # add player line
         for player_nr in range(PLAYER_CNT_MAX):
             player_config=PlayerConfig(player_nr)
-            self.player_configs.append(player_config.setup_menu())
+            self.player_prop_lines.append(player_config.setup_menu())
+            self.player_configs.append(player_config)
 
         for player_nr in range(self.player_cnt):
-            self.main_box.add(self.player_configs[player_nr])
+            self.main_box.add(self.player_prop_lines[player_nr])
 
     def check_players_config(self):
         logging.info("checking player configs")
