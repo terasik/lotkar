@@ -117,7 +117,7 @@ class MenuView(arcade.View):
         @start_btn.event("on_click")
         def start_game(event):
             logging.info("starting game!")
-            game_view=GameView(self.player_cnt,self.placonfigs)
+            game_view=GameView(self.player_cnt,self.player_configs)
             game_view.setup()
             self.window.show_view(game_view)
 

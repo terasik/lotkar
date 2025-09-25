@@ -35,15 +35,15 @@ class Player:
         self.hares_win=0
         self.hares_dead=0
 
-    def setup(self):
+    def setup(self, player_cnt):
         # setup hares
         for h in range(PLAYER_HARE_CNT):
-            hare_sprite=Hare(self.color, h+1, self.nr)
+            hare_sprite=Hare(self.color, h+1, self.nr, player_cnt)
             #hare_sprite.position=((1+self.nr)*50*(1+h), (1+self.nr)*50*(1+h))
             hare_sprite.set_init_position()
             self.hare_sprite_list.append(hare_sprite)
         # setup text
-        text_y=WINDOW_HEIGHT-((WINDOW_HEIGHT*self.nr)//PLAYER_CNT)-TEXT_SIZE-TEXT_Y_OFFSET
+        text_y=WINDOW_HEIGHT-((WINDOW_HEIGHT*self.nr)//player_cnt)-TEXT_SIZE-TEXT_Y_OFFSET
         text_x=CELLS_FIELD_WIDTH+TEXT_X_OFFSET
         #print(f"text_x={text_x}, text_y={text_y}")
         self.text_nr=arcade.Text(f"Spieler {self.nr+1}: {self.name}", 
@@ -82,7 +82,7 @@ class Player:
         self.text_hares_dead.text=f"Hasen ins Loch gefallen: {self.hares_dead}"
 
     @classmethod
-    def setup_boundary_shapes(cls):
+    def setup_boundary_shapes(cls, player_cnt):
         #cls.boundary_list=arcade.shape_list.ShapeElementList()
         cls.boundary_shape_list=arcade.shape_list.ShapeElementList()
         # vertical boundary
@@ -93,8 +93,8 @@ class Player:
                                                  BOUNDARY_LINE_COLOR,
                                                  BOUNDARY_LINE_WIDTH)
         cls.boundary_shape_list.append(vert_shape)
-        for p in range(PLAYER_CNT+1):
-            y=(WINDOW_HEIGHT*p)//PLAYER_CNT
+        for p in range(player_cnt+1):
+            y=(WINDOW_HEIGHT*p)//player_cnt
             hor_shape=arcade.shape_list.create_line(CELLS_FIELD_WIDTH,
                                                     y,
                                                     WINDOW_WIDTH,
@@ -104,12 +104,12 @@ class Player:
             cls.boundary_shape_list.append(hor_shape)
 
     @classmethod
-    def setup_status_sprites(cls):
-        for p in range(PLAYER_CNT):
+    def setup_status_sprites(cls, player_cnt):
+        for p in range(player_cnt):
             player_area=arcade.SpriteSolidColor(WINDOW_WIDTH//4,
-                                                WINDOW_HEIGHT//PLAYER_CNT,
+                                                WINDOW_HEIGHT//player_cnt,
                                                 WINDOW_WIDTH*7//8,
-                                                WINDOW_HEIGHT*p//PLAYER_CNT+WINDOW_HEIGHT//(PLAYER_CNT*2),
+                                                WINDOW_HEIGHT*p//player_cnt+WINDOW_HEIGHT//(player_cnt*2),
                                                 arcade.color.WHITE)
             cls.status_sprite_list.append(player_area)
             

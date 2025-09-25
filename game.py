@@ -29,6 +29,7 @@ class Game:
     def __init__(self, game_view):
         logging.info("init game instanz")
         self.game_view=game_view
+        self.player_cnt=game_view.player_cnt
         self.sprite_list=arcade.SpriteList()
         self.status_sprite=None
         self.batch=Batch()
@@ -45,7 +46,7 @@ class Game:
         self.player_input=None
         self.hole_nr=-1
         self.hare_nr=0
-        self.players_available=list(range(PLAYER_CNT))
+        self.players_available=list(range(self.player_cnt))
 
     def setup(self):
         logging.info("setup Game Klasse")
@@ -109,15 +110,15 @@ class Game:
         return False
 
     def highlight_active_player(self):
-        for p in range(PLAYER_CNT):
+        for p in range(self.player_cnt):
             if p==self.player_active:
-                player_color=C2AC[PLAYER_PROPS[p]["color"]]
-                Player.status_sprite_list[PLAYER_CNT-p-1].color=arcade.color.GREEN
-                #Player.status_sprite_list[PLAYER_CNT-p-1].color=player_color
-                #Player.status_sprite_list[PLAYER_CNT-p-1].alpha=154
+                #player_color=C2AC[PLAYER_PROPS[p]["color"]]
+                Player.status_sprite_list[self.player_cnt-p-1].color=arcade.color.GREEN
+                #Player.status_sprite_list[self.player_cnt-p-1].color=player_color
+                #Player.status_sprite_list[self.player_cnt-p-1].alpha=154
             else:
-                Player.status_sprite_list[PLAYER_CNT-p-1].color=arcade.color.WHITE
-                #Player.status_sprite_list[PLAYER_CNT-p-1].alpha=255
+                Player.status_sprite_list[self.player_cnt-p-1].color=arcade.color.WHITE
+                #Player.status_sprite_list[self.player_cnt-p-1].alpha=255
 
 
     def get_available_hares(self, player):
@@ -291,9 +292,9 @@ class Game:
                 logging.info("status GS_CHECK_PLAYER wird verarbeitet")
                 #self.reset_timer=0
                 self.check_players()
-                for t in range(PLAYER_CNT):
+                for t in range(self.player_cnt):
                     self.player_active+=1
-                    if self.player_active==PLAYER_CNT:
+                    if self.player_active==self.player_cnt:
                         self.player_active=0
                     if self.player_active in self.players_available:
                         self.state=GS_RANDOM_CARD

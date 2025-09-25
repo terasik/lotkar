@@ -16,27 +16,27 @@ CELL_DANGEROUS=(3,6,9, 12, 15, 18, 20, 22)
 CELL_RADIUS=50
 
 # players
-PLAYER_CNT=2
+#PLAYER_CNT=2
 PLAYER_CNT_MAX=4
 PLAYER_CNT_MIN=1
 PLAYER_HARE_CNT=3
-PLAYER_PROPS=[#{"color": "lila", "name": "Fima", "arcade_color": color.AZURE}, 
-              {"color": "black", "name": "Raja", "arcade_color": color.DARK_VIOLET}, 
-              {"color": "orange", "name": "Papa", "arcade_color": color.CRIMSON }, 
+#PLAYER_PROPS=[#{"color": "lila", "name": "Fima", "arcade_color": color.AZURE}, 
+#              {"color": "black", "name": "Raja", "arcade_color": color.DARK_VIOLET}, 
+#              {"color": "orange", "name": "Papa", "arcade_color": color.CRIMSON }, 
               #{"color": "yellow", "name": "Papa","arcade_color": color.DARK_PASTEL_GREEN}
-              ]
+#              ]
 
 # colors
 # orange -> WILLPOWER_ORANGE, PORTLAND_ORANGE
 # red -> CADMIUM_RED
 # yellow -> YELLOW, YELLOW_ROSE
-C2AC={"blue": color.AZURE,
-      "lila": color.DARK_VIOLET,
-      "red": color.CRIMSON,
-      "green": color.DARK_PASTEL_GREEN,
-      "orange": color.PORTLAND_ORANGE,
-      "yellow": color.YELLOW_ROSE,
-      "black": color.QUARTZ }
+#C2AC={"blue": color.AZURE,
+#      "lila": color.DARK_VIOLET,
+#      "red": color.CRIMSON,
+#      "green": color.DARK_PASTEL_GREEN,
+#      "orange": color.PORTLAND_ORANGE,
+#      "yellow": color.YELLOW_ROSE,
+#      "black": color.QUARTZ }
 
 
 # boundaries

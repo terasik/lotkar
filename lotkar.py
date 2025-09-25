@@ -1,11 +1,5 @@
 """
-Starting Template
-
-Once you have learned how to use classes, you can begin your program with this
-template.
-
-If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.starting_template
+main game view
 """
 import logging
 import arcade
@@ -19,11 +13,8 @@ CELL_POSITIONS=Cell.calc_cell_positions()
 
 class GameView(arcade.View):
     """
-    Main application class.
+    Main gaming class.
 
-    NOTE: Go ahead and delete the methods you don't need.
-    If you do need a method, delete the 'pass' and replace it
-    with your own code. Don't leave 'pass' in this program.
     """
 
     def __init__(self, player_cnt, player_configs):
@@ -52,8 +43,8 @@ class GameView(arcade.View):
             cell.center_y=CELL_POSITIONS[i][1]
             self.cell_list.append(cell)
         # create player boundaries
-        Player.setup_status_sprites()
-        Player.setup_boundary_shapes()
+        Player.setup_status_sprites(self.player_cnt)
+        Player.setup_boundary_shapes(self.player_cnt)
 
         #for p in range(PLAYER_CNT):
         for p in range(self.player_cnt):
@@ -61,7 +52,7 @@ class GameView(arcade.View):
             color=HARE_COLORS[player_config.color_nr]
             name=player_config.name
             player=Player(p, color, name=name)
-            player.setup()
+            player.setup(self.player_cnt)
             self.player_list.append(player)
         #test_sound.play(loop=True)
 
