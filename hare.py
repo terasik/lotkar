@@ -6,12 +6,13 @@ from defs import *
 
 class Hare(arcade.Sprite):
 
-    def __init__(self, color, nr, player_nr, player_cnt, **kwargs):
+    def __init__(self, color, nr, player_nr, player_cnt, hare_cnt, **kwargs):
         logging.info("init Hare instanz mit color=%s nr=%s pl_nr=%s", color, nr, player_nr)
         self.hare_color=color
         self.nr=nr
         self.player_cnt=player_cnt
         self.player_nr=player_nr
+        self.hare_cnt=hare_cnt
         self.available=True
         self.cell_nr=-1
         self.on_play=False
@@ -28,8 +29,8 @@ class Hare(arcade.Sprite):
 
     def calc_init_wh(self):
         """ calculate init width and height of hare pics """
-        max_width=(WINDOW_WIDTH-CELLS_FIELD_WIDTH-2*BOUNDARY_LINE_WIDTH)//PLAYER_HARE_CNT -\
-                HARE_SPACE*PLAYER_HARE_CNT - 5
+        max_width=(WINDOW_WIDTH-CELLS_FIELD_WIDTH-2*BOUNDARY_LINE_WIDTH)//self.hare_cnt -\
+                HARE_SPACE*self.hare_cnt - 5
         max_height=WINDOW_HEIGHT//self.player_cnt-100
         scale_x=max_width/HARE_WIDTH_ORIG
         scale_y=max_height/HARE_HEIGHT_ORIG

@@ -51,7 +51,8 @@ class GameView(arcade.View):
             player_config=self.player_configs[p]
             color=HARE_COLORS[player_config.color_nr]
             name=player_config.name
-            player=Player(p, color, name=name)
+            hare_cnt=player_config.hare_cnt
+            player=Player(p, color, hare_cnt, name=name)
             player.setup(self.player_cnt)
             self.player_list.append(player)
         #test_sound.play(loop=True)

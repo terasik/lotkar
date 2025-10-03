@@ -19,11 +19,12 @@ class Player:
 
     status_sprite_list=arcade.SpriteList()
 
-    def __init__(self, nr, color, **kwargs):
+    def __init__(self, nr, color, hare_cnt, **kwargs):
         logging.info("init Player instanz mit nr=%s color=%s", nr, color)
         self.hare_sprite_list=arcade.SpriteList()
         self.color=color
         self.nr=nr
+        self.hare_cnt=hare_cnt
         self.name=kwargs.get("name", SOME_NAMES[nr])
         self.batch=Batch()
         # player nr text
@@ -31,14 +32,14 @@ class Player:
         self.text_hares_alive=None
         self.text_hares_win=None
         self.text_hares_dead=None
-        self.hares_alive=PLAYER_HARE_CNT
+        self.hares_alive=self.hare_cnt
         self.hares_win=0
         self.hares_dead=0
 
     def setup(self, player_cnt):
         # setup hares
-        for h in range(PLAYER_HARE_CNT):
-            hare_sprite=Hare(self.color, h+1, self.nr, player_cnt)
+        for h in range(self.hare_cnt):
+            hare_sprite=Hare(self.color, h+1, self.nr, player_cnt, self.hare_cnt)
             #hare_sprite.position=((1+self.nr)*50*(1+h), (1+self.nr)*50*(1+h))
             hare_sprite.set_init_position()
             self.hare_sprite_list.append(hare_sprite)
@@ -53,7 +54,7 @@ class Player:
                                     color=arcade.color.BLACK,
                                     batch=self.batch)
         text_y=text_y-(TEXT_SIZE+TEXT_SPACE)
-        self.text_hares_alive=arcade.Text(f"Hasen verfügbar: {PLAYER_HARE_CNT}", 
+        self.text_hares_alive=arcade.Text(f"Hasen verfügbar: {self.hare_cnt}", 
                                     text_x, 
                                     text_y, 
                                     font_size=TEXT_FONT_SIZE,

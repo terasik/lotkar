@@ -10,6 +10,8 @@ from arcade.gui import (
 )
 from defs import *
 
+click_sound=arcade.Sound("resources/click.wav")
+
 class ModInpText(UIInputText):
     """ input text with nr to have possibility
     to deactivate it
@@ -37,13 +39,15 @@ def create_up_down_box(up_func=btn_up_handler_def, down_func=btn_down_handler_de
     btn_up=UITextureButton(texture=btn_up_pic)
     @btn_up.event("on_click")
     def wr_up(event):
+        # play click sound hier
+        click_sound.play()
         up_func(event)
-    #up_func=btn_up.event("on_click", up_func)
     btn_down=UITextureButton(texture=btn_down_pic)
     @btn_down.event("on_click")
     def wr_down(event):
+        # play click sound hier
+        click_sound.play()
         down_func(event)
-    #down_func=btn_down.event("on_click", down_func)
     # buttons box
     up_down_box=UIBoxLayout(space_between=10)
     up_down_box.add(btn_up)

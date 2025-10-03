@@ -24,6 +24,7 @@ class MenuView(arcade.View):
     def __init__(self):
         super().__init__()
         self.background_color=arcade.color.GRAY
+        self.check_ok=False
         self.player_cnt=PLAYER_CNT_MIN
         self.player_prop_lines=[]
         self.player_configs=[]
@@ -96,7 +97,7 @@ class MenuView(arcade.View):
         return create_up_down_box(inc_pl_cnt,dec_pl_cnt)
 
     def setup_exit_button(self):
-        exit_btn=UIFlatButton(style=UIFlatButton.STYLE_RED, text="EXIT")
+        exit_btn=UIFlatButton(style=UIFlatButton.STYLE_RED, text="ENDE")
         self.anchor.add(exit_btn, 
                         anchor_x="left", 
                         anchor_y="bottom", 
@@ -108,7 +109,7 @@ class MenuView(arcade.View):
             self.window.close()
 
     def setup_play_button(self):
-        start_btn=UIFlatButton(style=UIFlatButton.STYLE_BLUE, text="PLAY")
+        start_btn=UIFlatButton(style=UIFlatButton.STYLE_BLUE, text="SPIEL")
         self.anchor.add(start_btn, 
                         anchor_x="right", 
                         anchor_y="bottom", 
@@ -116,10 +117,31 @@ class MenuView(arcade.View):
                         align_y=20)
         @start_btn.event("on_click")
         def start_game(event):
-            logging.info("starting game!")
-            game_view=GameView(self.player_cnt,self.player_configs)
-            game_view.setup()
-            self.window.show_view(game_view)
+            logging.info("show some message box")
+            msg_box=arcade.gui.UIMessageBox(width=250, 
+                                            height=250, 
+                                            message_text="Hier ist Hasenprüfung geplant oder \num wieder zum Menü zu kommen", 
+                                            title="Prüfe, prüfe..",
+                                            buttons=["Ja", "Korrektur"])
+            @msg_box.event("on_action")
+            def msg_box_act(event):
+                logging.info("msg box on_action %s", event)
+                if event.action=="Ja":
+                    # start game hier
+                    self.check_ok=True
+                    self._goto_game()
+                else:
+                    self.check_ok=False
+            self.ui.add(msg_box)
+            if self.check_ok:
+                self._goto_game()
+
+    def _goto_game(self):
+        logging.info("starting game!")
+        game_view=GameView(self.player_cnt,self.player_configs)
+        game_view.setup()
+        self.window.show_view(game_view)
+
 
     def setup_player_config(self):
         logging.info("setup player config")

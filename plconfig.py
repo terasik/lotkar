@@ -28,6 +28,8 @@ class PlayerConfig:
         self.name=f"unknown_{nr+1}"
         self.prop_line=None
         self.hare_image=None
+        self.hare_cnt=HARE_CNT_MIN
+        self.lbl_hare_cnt_text=None
 
     def setup_menu(self):
         player_prop_line=UIBoxLayout(vertical=False, 
@@ -39,10 +41,23 @@ class PlayerConfig:
                               font_size=22)
         hare_up_down_box=self.setup_hare_choice()
         hare_image=UIImage(texture=hare_textures[self.nr], width=64, height=85)
-        lbl_name=UILabel(text=f"Name", 
+        lbl_name=UILabel(text=f"Name:", 
                          align="left", 
                          text_color=arcade.color.BLACK, 
                          font_size=22)
+        lbl_hare_cnt=UILabel(text=f"Hasenanzahl:", 
+                         align="left", 
+                         text_color=arcade.color.BLACK, 
+                         font_size=22)
+        self.lbl_hare_cnt_text=UILabel(text=f"{self.hare_cnt}", 
+                         align="center", 
+                         text_color=arcade.color.BLACK, 
+                         font_size=22)
+        lbl_hare_color=UILabel(text=f"Hasenfarbe:", 
+                         align="left", 
+                         text_color=arcade.color.BLACK, 
+                         font_size=22)
+
         name_input=ModInpText(self.nr, text_color=arcade.color.BLACK)
         #name_input=name_text_inputs[self.nr]
         @name_input.event("on_change")
@@ -59,8 +74,14 @@ class PlayerConfig:
                     s.deactivate()
         name_text_inputs.append(name_input)
         player_prop_line.add(lbl_player_nr)
+        player_prop_line.add(lbl_hare_color)
         player_prop_line.add(hare_up_down_box)
         player_prop_line.add(hare_image)
+        
+        player_prop_line.add(lbl_hare_cnt)
+        player_prop_line.add(self.setup_hare_cnt())
+        player_prop_line.add(self.lbl_hare_cnt_text)
+
         player_prop_line.add(lbl_name)
         player_prop_line.add(name_input)
         self.hare_image=hare_image
@@ -81,6 +102,22 @@ class PlayerConfig:
             self.hare_image.texture=hare_textures[self.color_nr]
             logging.info("hare color changed (-) to nr %s (%s)", self.color_nr, HARE_COLORS[self.color_nr])
         return create_up_down_box(inc_hare_image,dec_hare_image)
+
+    def setup_hare_cnt(self):
+        def inc_hare_cnt(event):
+            self.hare_cnt+=1
+            if self.hare_cnt>=HARE_CNT_MAX:
+                self.hare_cnt=HARE_CNT_MAX
+            self.lbl_hare_cnt_text.text=self.hare_cnt
+            logging.info("hare count changed (+) to %s", self.hare_cnt)
+        def dec_hare_cnt(event):
+            self.hare_cnt-=1
+            if self.hare_cnt<=HARE_CNT_MIN:
+                self.hare_cnt=HARE_CNT_MIN
+            self.lbl_hare_cnt_text.text=self.hare_cnt
+            logging.info("hare count changed (-) to %s", self.hare_cnt)
+        return create_up_down_box(inc_hare_cnt,dec_hare_cnt)
+
 
 
 
