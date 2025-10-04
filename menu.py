@@ -118,11 +118,22 @@ class MenuView(arcade.View):
         @start_btn.event("on_click")
         def start_game(event):
             logging.info("show some message box")
-            msg_box=arcade.gui.UIMessageBox(width=250, 
-                                            height=250, 
-                                            message_text="Hier ist Hasenprüfung geplant oder \num wieder zum Menü zu kommen", 
+            if self._check_hare_colors():
+                msg_text="""\
+Alles bereit für ein Spiel!
+Drücke 'Ja' für Spielen oder
+'Abbruch' um zurück zum Menü zu kommen"""
+            else:
+                msg_text="""\
+Achtung, Achtung eine Durchsage:
+Einige Spieler haben gleiche Hasenfarben!!
+Drücke 'Ja' um trotzdem weiter zu spielen oder 
+'Abbruch' um eine Korrektur im Menü zu machen"""
+            msg_box=arcade.gui.UIMessageBox(width=300, 
+                                            height=300, 
+                                            message_text=msg_text, 
                                             title="Prüfe, prüfe..",
-                                            buttons=["Ja", "Korrektur"])
+                                            buttons=["Ja", "Abbruch"])
             @msg_box.event("on_action")
             def msg_box_act(event):
                 logging.info("msg box on_action %s", event)
@@ -141,6 +152,19 @@ class MenuView(arcade.View):
         game_view=GameView(self.player_cnt,self.player_configs)
         game_view.setup()
         self.window.show_view(game_view)
+
+    def _check_hare_colors(self):
+        """
+        check hare colors. if players have same color
+        show it on message box
+        """
+        colors=set()
+        for p in range(self.player_cnt):
+            colors.add(self.player_configs[p].color_nr)
+        if self.player_cnt == len(colors):
+            return True
+        return False
+
 
 
     def setup_player_config(self):
