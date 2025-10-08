@@ -68,6 +68,7 @@ class GameView(arcade.View):
         arcade.draw_texture_rect(
             self.bkg,
             arcade.LBWH(0, 80, WINDOW_WIDTH*3/4, WINDOW_HEIGHT),
+            alpha=128
         )
         # Call draw() on all your sprite lists below
         #self.game.sprite_list.draw()

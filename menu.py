@@ -15,15 +15,17 @@ from arcade.gui import (
 )
 from plconfig import PlayerConfig
 from helpers import create_up_down_box
-from defs import PLAYER_CNT_MAX, PLAYER_CNT_MIN
+from defs import PLAYER_CNT_MAX, PLAYER_CNT_MIN, BKG_PIC_MENU, WINDOW_WIDTH, WINDOW_HEIGHT
 from lotkar import GameView
 
+#arcade.resources.load_kenney_fonts()
 
 class MenuView(arcade.View):
 
     def __init__(self):
         super().__init__()
         self.background_color=arcade.color.GRAY
+        self.bkg_pic = arcade.load_texture(BKG_PIC_MENU)
         self.check_ok=False
         self.player_cnt=PLAYER_CNT_MIN
         self.player_prop_lines=[]
@@ -97,7 +99,10 @@ class MenuView(arcade.View):
         return create_up_down_box(inc_pl_cnt,dec_pl_cnt)
 
     def setup_exit_button(self):
-        exit_btn=UIFlatButton(style=UIFlatButton.STYLE_RED, text="ENDE")
+        style=UIFlatButton.STYLE_RED
+        style["normal"]["font_color"]=(0,0,0,255)
+        style["hover"]["font_color"]=(0,0,0,255)
+        exit_btn=UIFlatButton(style=style, text="ENDE")
         self.anchor.add(exit_btn, 
                         anchor_x="left", 
                         anchor_y="bottom", 
@@ -109,7 +114,10 @@ class MenuView(arcade.View):
             self.window.close()
 
     def setup_play_button(self):
-        start_btn=UIFlatButton(style=UIFlatButton.STYLE_BLUE, text="SPIEL")
+        style=UIFlatButton.STYLE_BLUE
+        style["normal"]["font_color"]=(0,0,0,255)
+        style["hover"]["font_color"]=(0,0,0,255)
+        start_btn=UIFlatButton(style=style, text="SPIEL")
         self.anchor.add(start_btn, 
                         anchor_x="right", 
                         anchor_y="bottom", 
@@ -194,6 +202,11 @@ Drücke 'Ja' um trotzdem weiter zu spielen oder
 
         # Add draw commands that should be below the UI
         # ...
+        arcade.draw_texture_rect(
+            self.bkg_pic,
+            arcade.LBWH(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT),
+            alpha=64
+        )
 
         self.ui.draw()
 

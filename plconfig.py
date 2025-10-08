@@ -58,7 +58,8 @@ class PlayerConfig:
                          text_color=arcade.color.BLACK, 
                          font_size=22)
 
-        name_input=ModInpText(self.nr, text_color=arcade.color.BLACK)
+        name_input=ModInpText(self.nr, text_color=arcade.color.BLACK,
+                              border_color=arcade.color.BLACK, border_width=3)
         #name_input=name_text_inputs[self.nr]
         @name_input.event("on_change")
         def name_input_change(event):

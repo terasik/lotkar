@@ -60,5 +60,6 @@ CARD_TIME_END=3.0
 CARD_CNT=[23, 7, 3, 10]
 
 # bkg
-BKG_PIC_NORM="resources/bkg_norm.png"
+BKG_PIC_NORM="resources/bkg_norm_2.png"
 BKG_PIC_WON="resources/bkg_won.png"
+BKG_PIC_MENU="resources/bkg_pic_menu.png"
