@@ -305,9 +305,16 @@ class Game:
                     self.state=GS_END_OF_GAME
 
         elif self.state==GS_END_OF_GAME:
-            if self.timer_change(delta_time, 2):
+            if self.timer_change(delta_time, 1):
                 #self.reset_timer=0
                 logging.info("press ESC button to let me free")
+                from end import EndView
+                # Create and setup the EndView
+                end_view = EndView()
+                end_view.setup()
+
+                # Show EndView on screen
+                self.game_view.window.show_view(end_view)
 
 
         #if self.reset_timer>=GAME_RESET_TIME:
